@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FlyMilhas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-normal);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary);
+        }
+        
+        .stat-card.success::before {
+            background: var(--success);
+        }
+        
+        .stat-card.warning::before {
+            background: var(--warning);
+        }
+        
+        .stat-card.info::before {
+            background: var(--info);
+        }
+        
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-md);
+        }
+        
+        .stat-title {
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgb(37 99 235 / 0.1);
+            color: var(--primary);
+        }
+        
+        .stat-icon.success {
+            background: rgb(16 185 129 / 0.1);
+            color: var(--success);
+        }
+        
+        .stat-icon.warning {
+            background: rgb(245 158 11 / 0.1);
+            color: var(--warning);
+        }
+        
+        .stat-icon.info {
+            background: rgb(6 182 212 / 0.1);
+            color: var(--info);
+        }
+        
+        .stat-value {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: var(--text-sm);
+        }
+        
+        .stat-change.positive {
+            color: var(--success);
+        }
+        
+        .stat-change.negative {
+            color: var(--error);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .chart-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .chart-title {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-tertiary);
+            font-size: var(--text-sm);
+            border: 2px dashed var(--border-medium);
+        }
+        
+        .recent-activity {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-sm);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .activity-icon.credit {
+            background: rgb(16 185 129 / 0.1);
+            color: var(--success);
+        }
+        
+        .activity-icon.debit {
+            background: rgb(239 68 68 / 0.1);
+            color: var(--error);
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .activity-subtitle {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+        }
+        
+        .activity-value {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            text-align: right;
+        }
+        
+        .activity-value.positive {
+            color: var(--success);
+        }
+        
+        .activity-value.negative {
+            color: var(--error);
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+        }
+        
+        .action-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+        
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            background: rgb(37 99 235 / 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-md);
+            font-size: var(--text-xl);
+        }
+        
+        .action-title {
+            font-size: var(--text-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .action-subtitle {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">FM</div>
+                <div class="sidebar-brand">FlyMilhas</div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <div class="nav-item">
+                        <a href="index.html" class="nav-link active">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="milhas.html" class="nav-link">
+                            <span class="nav-icon">✈️</span>
+                            Minhas Milhas
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="transacoes.html" class="nav-link">
+                            <span class="nav-icon">📋</span>
+                            Transações
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Ferramentas</div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <span class="nav-icon">🎯</span>
+                            Metas
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <span class="nav-icon">📈</span>
+                            Relatórios
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <span class="nav-icon">🔔</span>
+                            Alertas
+                            <span class="nav-badge">3</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Conta</div>
+                    <div class="nav-item">
+                        <a href="perfil.html" class="nav-link">
+                            <span class="nav-icon">⚙️</span>
+                            Configurações
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <span class="nav-icon">❓</span>
+                            Ajuda
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+                        <span>☰</span>
+                    </button>
+                    <div>
+                        <h1 class="header-title">Dashboard</h1>
+                        <p class="header-subtitle">Visão geral das suas milhas</p>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="header-search">
+                        <span class="header-search-icon">🔍</span>
+                        <input type="text" placeholder="Buscar...">
+                    </div>
+                    
+                    <div class="header-notifications">
+                        <span>🔔</span>
+                        <div class="header-notifications-badge"></div>
+                    </div>
+                    
+                    <div class="header-profile" onclick="alert('Menu de perfil em desenvolvimento')">
+                        <div class="header-avatar">JD</div>
+                        <div class="header-profile-info">
+                            <div class="header-profile-name">João Silva</div>
+                            <div class="header-profile-role">Usuário Premium</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Content -->
+            <div class="content">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Total de Milhas</div>
+                            <div class="stat-icon">✈️</div>
+                        </div>
+                        <div class="stat-value">127.450</div>
+                        <div class="stat-change positive">
+                            <span>↗️</span>
+                            <span>+12% este mês</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card success">
+                        <div class="stat-header">
+                            <div class="stat-title">Milhas Ganhas</div>
+                            <div class="stat-icon success">📈</div>
+                        </div>
+                        <div class="stat-value">15.230</div>
+                        <div class="stat-change positive">
+                            <span>↗️</span>
+                            <span>+8% este mês</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card warning">
+                        <div class="stat-header">
+                            <div class="stat-title">Milhas Utilizadas</div>
+                            <div class="stat-icon warning">📉</div>
+                        </div>
+                        <div class="stat-value">8.750</div>
+                        <div class="stat-change negative">
+                            <span>↘️</span>
+                            <span>-3% este mês</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card info">
+                        <div class="stat-header">
+                            <div class="stat-title">Programas Ativos</div>
+                            <div class="stat-icon info">🏆</div>
+                        </div>
+                        <div class="stat-value">5</div>
+                        <div class="stat-change positive">
+                            <span>→</span>
+                            <span>Sem alteração</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Evolução das Milhas</h3>
+                            <select class="form-input" style="width: auto;">
+                                <option>Últimos 6 meses</option>
+                                <option>Último ano</option>
+                                <option>Últimos 2 anos</option>
+                            </select>
+                        </div>
+                        <div class="chart-placeholder">
+                            📊 Gráfico será integrado com dados do n8n
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="recent-activity">
+                        <h3 class="chart-title" style="margin-bottom: var(--space-lg);">Atividade Recente</h3>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon credit">+</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Compra no cartão</div>
+                                <div class="activity-subtitle">TAM - Hoje, 14:30</div>
+                            </div>
+                            <div class="activity-value positive">+1.250</div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon debit">-</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Resgate de passagem</div>
+                                <div class="activity-subtitle">GOL - Ontem, 09:15</div>
+                            </div>
+                            <div class="activity-value negative">-25.000</div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon credit">+</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Bônus de cadastro</div>
+                                <div class="activity-subtitle">AZUL - 2 dias atrás</div>
+                            </div>
+                            <div class="activity-value positive">+5.000</div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon credit">+</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Voo realizado</div>
+                                <div class="activity-subtitle">LATAM - 3 dias atrás</div>
+                            </div>
+                            <div class="activity-value positive">+3.750</div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: var(--space-lg);">
+                            <a href="transacoes.html" class="btn btn-outline btn-sm">Ver todas as transações</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="content-header">
+                    <h2 class="content-title" style="font-size: var(--text-xl); margin-bottom: var(--space-lg);">Ações Rápidas</h2>
+                </div>
+                
+                <div class="quick-actions">
+                    <a href="milhas.html" class="action-card">
+                        <div class="action-icon">➕</div>
+                        <div class="action-title">Adicionar Milhas</div>
+                        <div class="action-subtitle">Registrar nova movimentação</div>
+                    </a>
+                    
+                    <a href="#" class="action-card" onclick="alert('Funcionalidade em desenvolvimento')">
+                        <div class="action-icon">🎯</div>
+                        <div class="action-title">Definir Meta</div>
+                        <div class="action-subtitle">Criar objetivo de milhas</div>
+                    </a>
+                    
+                    <a href="#" class="action-card" onclick="alert('Funcionalidade em desenvolvimento')">
+                        <div class="action-icon">📊</div>
+                        <div class="action-title">Gerar Relatório</div>
+                        <div class="action-subtitle">Exportar dados</div>
+                    </a>
+                    
+                    <a href="#" class="action-card" onclick="alert('Funcionalidade em desenvolvimento')">
+                        <div class="action-icon">🔔</div>
+                        <div class="action-title">Configurar Alerta</div>
+                        <div class="action-subtitle">Notificações automáticas</div>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+        
+        // Simular dados dinâmicos
+        function updateStats() {
+            // Esta função seria conectada ao n8n para dados reais
+            console.log('Atualizando estatísticas...');
+        }
+        
+        // Atualizar stats a cada 30 segundos (exemplo)
+        setInterval(updateStats, 30000);
+    </script>
+</body>
+</html>
+

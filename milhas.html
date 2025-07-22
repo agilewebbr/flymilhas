@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Milhas - FlyMilhas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <style>
+        .milhas-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-2xl);
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+        
+        .milhas-filters {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .milhas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .milhas-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-normal);
+        }
+        
+        .milhas-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .milhas-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .milhas-card.tam::before {
+            background: linear-gradient(90deg, #e31e24, #ff6b6b);
+        }
+        
+        .milhas-card.gol::before {
+            background: linear-gradient(90deg, #ff8c00, #ffa500);
+        }
+        
+        .milhas-card.azul::before {
+            background: linear-gradient(90deg, #0066cc, #4da6ff);
+        }
+        
+        .milhas-card.american::before {
+            background: linear-gradient(90deg, #c41e3a, #ff4757);
+        }
+        
+        .airline-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .airline-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .airline-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-inverse);
+            font-size: var(--text-lg);
+        }
+        
+        .airline-logo.tam {
+            background: linear-gradient(135deg, #e31e24, #ff6b6b);
+        }
+        
+        .airline-logo.gol {
+            background: linear-gradient(135deg, #ff8c00, #ffa500);
+        }
+        
+        .airline-logo.azul {
+            background: linear-gradient(135deg, #0066cc, #4da6ff);
+        }
+        
+        .airline-logo.american {
+            background: linear-gradient(135deg, #c41e3a, #ff4757);
+        }
+        
+        .airline-details h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .airline-details p {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+        
+        .airline-status {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+        
+        .status-dot.warning {
+            background: var(--warning);
+        }
+        
+        .status-dot.error {
+            background: var(--error);
+        }
+        
+        .milhas-balance {
+            text-align: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .balance-value {
+            font-size: var(--text-4xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .balance-label {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .milhas-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: var(--space-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+        }
+        
+        .stat-value {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .stat-label {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .milhas-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: var(--space-sm);
+            border: 1px solid var(--border-medium);
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .action-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-dark);
+        }
+        
+        .action-btn.primary {
+            background: var(--primary);
+            color: var(--text-inverse);
+            border-color: var(--primary);
+        }
+        
+        .action-btn.primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-3xl);
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border-medium);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--space-lg);
+            opacity: 0.5;
+        }
+        
+        .empty-title {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .empty-subtitle {
+            font-size: var(--text-base);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .summary-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-xl);
+        }
+        
+        .summary-item {
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .summary-label {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        @media (max-width: 768px) {
+            .milhas-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .milhas-filters {
+                justify-content: center;
+            }
+            
+            .milhas-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .milhas-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">FM</div>
+                <div class="sidebar-brand">FlyMilhas</div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <div class="nav-item">
+                        <a href="index.html" class="nav-link">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="milhas.html" class="nav-link active">
+                            <span class="nav-icon">✈️</span>
+                            Minhas Milhas
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="transacoes.html" class="nav-link">
+                            <span class="nav-icon">📋</span>
+                            Transações
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Ferramentas</div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <span class="nav-icon">🎯</span>
+                            Metas
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <span class="nav-icon">📈</span>
+                            Relatórios
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <span class="nav-icon">🔔</span>
+                            Alertas
+                            <span class="nav-badge">3</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Conta</div>
+                    <div class="nav-item">
+                        <a href="perfil.html" class="nav-link">
+                            <span class="nav-icon">⚙️</span>
+                            Configurações
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="nav-link" onclick="alert('Funcionalidade em desenvolvimento')">
+                            <span class="nav-icon">❓</span>
+                            Ajuda
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+                        <span>☰</span>
+                    </button>
+                    <div>
+                        <h1 class="header-title">Minhas Milhas</h1>
+                        <p class="header-subtitle">Gerencie suas contas de milhas</p>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="header-search">
+                        <span class="header-search-icon">🔍</span>
+                        <input type="text" placeholder="Buscar programa...">
+                    </div>
+                    
+                    <div class="header-notifications">
+                        <span>🔔</span>
+                        <div class="header-notifications-badge"></div>
+                    </div>
+                    
+                    <div class="header-profile" onclick="alert('Menu de perfil em desenvolvimento')">
+                        <div class="header-avatar">JD</div>
+                        <div class="header-profile-info">
+                            <div class="header-profile-name">João Silva</div>
+                            <div class="header-profile-role">Usuário Premium</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Content -->
+            <div class="content">
+                <!-- Summary Card -->
+                <div class="summary-card">
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="summary-value">127.450</div>
+                            <div class="summary-label">Total de Milhas</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value">5</div>
+                            <div class="summary-label">Programas Ativos</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value">15.230</div>
+                            <div class="summary-label">Ganhas este Mês</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value">8.750</div>
+                            <div class="summary-label">Utilizadas este Mês</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Header with Actions -->
+                <div class="milhas-header">
+                    <div>
+                        <h2 class="content-title" style="margin-bottom: var(--space-xs);">Programas de Milhas</h2>
+                        <p class="content-subtitle">Acompanhe seus saldos e movimentações</p>
+                    </div>
+                    
+                    <div class="milhas-filters">
+                        <select class="form-input">
+                            <option>Todos os programas</option>
+                            <option>Apenas ativos</option>
+                            <option>Com saldo</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="showAddMilhasModal()">
+                            ➕ Adicionar Programa
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Milhas Cards -->
+                <div class="milhas-grid">
+                    <!-- TAM Card -->
+                    <div class="milhas-card tam">
+                        <div class="airline-header">
+                            <div class="airline-info">
+                                <div class="airline-logo tam">TAM</div>
+                                <div class="airline-details">
+                                    <h3>TAM Fidelidade</h3>
+                                    <p>Conta: ****1234</p>
+                                </div>
+                            </div>
+                            <div class="airline-status">
+                                <div class="status-dot"></div>
+                                <span style="font-size: var(--text-xs); color: var(--text-secondary);">Ativo</span>
+                            </div>
+                        </div>
+                        
+                        <div class="milhas-balance">
+                            <div class="balance-value">45.230</div>
+                            <div class="balance-label">Milhas Disponíveis</div>
+                        </div>
+                        
+                        <div class="milhas-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">+2.150</div>
+                                <div class="stat-label">Este Mês</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">31/12/24</div>
+                                <div class="stat-label">Vencimento</div>
+                            </div>
+                        </div>
+                        
+                        <div class="milhas-actions">
+                            <button class="action-btn primary" onclick="alert('Adicionar transação - TAM')">Adicionar</button>
+                            <button class="action-btn" onclick="alert('Ver histórico - TAM')">Histórico</button>
+                            <button class="action-btn" onclick="alert('Configurações - TAM')">⚙️</button>
+                        </div>
+                    </div>
+                    
+                    <!-- GOL Card -->
+                    <div class="milhas-card gol">
+                        <div class="airline-header">
+                            <div class="airline-info">
+                                <div class="airline-logo gol">GOL</div>
+                                <div class="airline-details">
+                                    <h3>Smiles</h3>
+                                    <p>Conta: ****5678</p>
+                                </div>
+                            </div>
+                            <div class="airline-status">
+                                <div class="status-dot"></div>
+                                <span style="font-size: var(--text-xs); color: var(--text-secondary);">Ativo</span>
+                            </div>
+                        </div>
+                        
+                        <div class="milhas-balance">
+                            <div class="balance-value">32.750</div>
+                            <div class="balance-label">Milhas Disponíveis</div>
+                        </div>
+                        
+                        <div class="milhas-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">+1.850</div>
+                                <div class="stat-label">Este Mês</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">15/06/25</div>
+                                <div class="stat-label">Vencimento</div>
+                            </div>
+                        </div>
+                        
+                        <div class="milhas-actions">
+                            <button class="action-btn primary" onclick="alert('Adicionar transação - GOL')">Adicionar</button>
+                            <button class="action-btn" onclick="alert('Ver histórico - GOL')">Histórico</button>
+                            <button class="action-btn" onclick="alert('Configurações - GOL')">⚙️</button>
+                        </div>
+                    </div>
+                    
+                    <!-- AZUL Card -->
+                    <div class="milhas-card azul">
+                        <div class="airline-header">
+                            <div class="airline-info">
+                                <div class="airline-logo azul">AZUL</div>
+                                <div class="airline-details">
+                                    <h3>TudoAzul</h3>
+                                    <p>Conta: ****9012</p>
+                                </div>
+                            </div>
+                            <div class="airline-status">
+                                <div class="status-dot warning"></div>
+                                <span style="font-size: var(--text-xs); color: var(--text-secondary);">Vencendo</span>
+                            </div>
+                        </div>
+                        
+                        <div class="milhas-balance">
+                            <div class="balance-value">28.470</div>
+                            <div class="balance-label">Milhas Disponíveis</div>
+                        </div>
+                        
+                        <div class="milhas-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">+950</div>
+                                <div class="stat-label">Este Mês</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">28/02/25</div>
+                                <div class="stat-label">Vencimento</div>
+                            </div>
+                        </div>
+                        
+                        <div class="milhas-actions">
+                            <button class="action-btn primary" onclick="alert('Adicionar transação - AZUL')">Adicionar</button>
+                            <button class="action-btn" onclick="alert('Ver histórico - AZUL')">Histórico</button>
+                            <button class="action-btn" onclick="alert('Configurações - AZUL')">⚙️</button>
+                        </div>
+                    </div>
+                    
+                    <!-- American Airlines Card -->
+                    <div class="milhas-card american">
+                        <div class="airline-header">
+                            <div class="airline-info">
+                                <div class="airline-logo american">AA</div>
+                                <div class="airline-details">
+                                    <h3>AAdvantage</h3>
+                                    <p>Conta: ****3456</p>
+                                </div>
+                            </div>
+                            <div class="airline-status">
+                                <div class="status-dot"></div>
+                                <span style="font-size: var(--text-xs); color: var(--text-secondary);">Ativo</span>
+                            </div>
+                        </div>
+                        
+                        <div class="milhas-balance">
+                            <div class="balance-value">21.000</div>
+                            <div class="balance-label">Milhas Disponíveis</div>
+                        </div>
+                        
+                        <div class="milhas-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">+0</div>
+                                <div class="stat-label">Este Mês</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Sem venc.</div>
+                                <div class="stat-label">Vencimento</div>
+                            </div>
+                        </div>
+                        
+                        <div class="milhas-actions">
+                            <button class="action-btn primary" onclick="alert('Adicionar transação - American')">Adicionar</button>
+                            <button class="action-btn" onclick="alert('Ver histórico - American')">Histórico</button>
+                            <button class="action-btn" onclick="alert('Configurações - American')">⚙️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+        
+        function showAddMilhasModal() {
+            alert('Modal para adicionar novo programa de milhas será implementado com n8n');
+        }
+        
+        // Simular atualização de dados
+        function updateMilhasData() {
+            // Esta função seria conectada ao n8n para dados reais
+            console.log('Atualizando dados das milhas...');
+        }
+        
+        // Atualizar dados a cada 5 minutos
+        setInterval(updateMilhasData, 300000);
+    </script>
+</body>
+</html>
+

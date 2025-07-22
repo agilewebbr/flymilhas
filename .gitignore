@@ -1,0 +1,17 @@
+# Arquivos de desenvolvimento
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+.env
+.env.local
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -526,3 +526,12 @@ window.addEventListener('error', (e) => {
 });
 
 console.log('🎯 FlyMilhas App carregado e pronto!');
+
+// Adicionar após linha de salvamento no método handleLogin
+console.log('💾 Tentando salvar no localStorage:', userData);
+const saved = localStorage.setItem('flymilhas_user', JSON.stringify(userData));
+console.log('✅ Dados salvos com sucesso');
+
+// Verificar imediatamente se foi salvo
+const check = localStorage.getItem('flymilhas_user');
+console.log('🔍 Verificação imediata:', check ? '✅ Dados encontrados' : '❌ Dados não encontrados');

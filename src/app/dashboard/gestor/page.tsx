@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/components/AuthProvider'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
-import { Users, BarChart3, Plane, CreditCard } from 'lucide-react'
+import { Users, BarChart3, Plane, CreditCard, Link } from 'lucide-react'
 
 export default function GestorDashboard() {
   const { profile, signOut } = useAuth()
@@ -138,24 +138,23 @@ export default function GestorDashboard() {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white shadow rounded-lg">
-              <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                  Ações Rápidas
-                </h3>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  <button className="bg-brand-600 hover:bg-brand-700 text-white px-4 py-3 rounded-md text-sm font-medium transition-colors">
-                    + Adicionar Cliente
-                  </button>
-                  <button className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-3 rounded-md text-sm font-medium transition-colors">
-                    Ver Todos os Clientes
-                  </button>
-                  <button className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-3 rounded-md text-sm font-medium transition-colors">
-                    Relatórios
-                  </button>
-                </div>
-              </div>
-            </div>
+<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <Link
+    href="/clients?action=create"
+    className="bg-brand-600 hover:bg-brand-700 text-white px-4 py-3 rounded-md text-sm font-medium transition-colors text-center"
+  >
+    + Adicionar Cliente
+  </Link>
+  <Link
+    href="/clients"
+    className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-3 rounded-md text-sm font-medium transition-colors text-center"
+  >
+    Ver Todos os Clientes
+  </Link>
+  <button className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-3 rounded-md text-sm font-medium transition-colors">
+    Relatórios
+  </button>
+</div>
 
             {/* Status Sprint 1 */}
             <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">

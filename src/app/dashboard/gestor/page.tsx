@@ -165,19 +165,6 @@ export default function GestorDashboard() {
                     ✅
                   </div>
                 </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-green-800">
-                    Sprint 1 - Concluído com Sucesso!
-                  </h3>
-                  <div className="mt-2 text-sm text-green-700">
-                    <p>
-                      ✅ Autenticação funcionando<br/>
-                      ✅ Login/Signup operacionais<br/>
-                      ✅ Dashboard do gestor criado<br/>
-                      ✅ Deploy em produção (www.flymilhas.com.br)
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

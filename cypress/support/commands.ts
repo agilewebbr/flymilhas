@@ -52,28 +52,3 @@ Cypress.Commands.add('cleanupTestData', () => {
   // Visit home page to reset state
   cy.visit('/')
 })
-
-// Add more custom commands as needed for FlyMilhas testing
-
-// Example: Command to add test data
-Cypress.Commands.add('addTestClient', (gestorEmail: string, clientData: any) => {
-  // This would make API calls to add test clients
-  // Implementation depends on your API structure
-})
-
-// Example: Command to verify dashboard elements
-Cypress.Commands.add('verifyDashboardElements', (role: 'gestor' | 'cliente' | 'admin') => {
-  // Verify common dashboard elements based on role
-  cy.get('[data-testid="dashboard-header"]').should('be.visible')
-  
-  if (role === 'gestor') {
-    cy.get('[data-testid="clients-section"]').should('be.visible')
-    cy.get('[data-testid="kpi-cards"]').should('be.visible')
-  } else if (role === 'cliente') {
-    cy.get('[data-testid="my-accounts"]').should('be.visible')
-    cy.get('[data-testid="balance-charts"]').should('be.visible')
-  } else if (role === 'admin') {
-    cy.get('[data-testid="admin-metrics"]').should('be.visible')
-    cy.get('[data-testid="system-overview"]').should('be.visible')
-  }
-})

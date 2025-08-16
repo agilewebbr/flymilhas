@@ -65,6 +65,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  const createProfile = async (userId: string, name: string, role: 'gestor' | 'cliente') => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: userId,
+          name,
+          role,
+        })
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Error creating profile:', error)
+        return null
+      }
+
+      return data
+    } catch (error) {
+      console.error('Error creating profile:', error)
+      return null
+    }
+  }
+
   const refreshProfile = async () => {
     if (user) {
       const profileData = await fetchProfile(user.id)
@@ -117,28 +141,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          name,
+          role,
+        }
+      }
     })
 
     if (error) {
       return { error }
     }
 
-    // Create profile immediately after signup
-    if (data.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          user_id: data.user.id,
-          name,
-          role,
-        })
-
-      if (profileError) {
-        console.error('Error creating profile:', profileError)
-        // Note: In production, you might want to handle this error more gracefully
-      }
-    }
-
+    // Profile será criado via trigger do banco ou webhook
+    // Não tentamos criar aqui para evitar problemas de RLS
+    
     return { error: null }
   }
 

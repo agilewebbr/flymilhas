@@ -67,8 +67,9 @@ export const useDashboard = () => {
         .limit(5)
 
       // Processar dados do gráfico
-      const clientsPerMonth = []
-      if (monthlyData) {
+      let clientsPerMonth: Array<{ month: string; count: number }> = []
+      
+      if (monthlyData && monthlyData.length > 0) {
         const monthCounts = monthlyData.reduce((acc, client) => {
           const month = new Date(client.created_at).toLocaleDateString('pt-BR', { 
             year: 'numeric', 
@@ -85,8 +86,8 @@ export const useDashboard = () => {
       }
 
       // Calcular crescimento
-      const growthPercentage = lastMonthClients > 0 
-        ? ((newClientsThisMonth - lastMonthClients) / lastMonthClients) * 100 
+      const growthPercentage = lastMonthClients && lastMonthClients > 0 
+        ? ((newClientsThisMonth || 0) - lastMonthClients) / lastMonthClients * 100 
         : 0
 
       setStats({
@@ -97,6 +98,7 @@ export const useDashboard = () => {
         recentClients: recentClients || []
       })
     } catch (err) {
+      console.error('Erro ao carregar dashboard:', err)
       setError(err instanceof Error ? err.message : 'Erro ao carregar dashboard')
     } finally {
       setLoading(false)

@@ -62,7 +62,7 @@ export function ClientsChart({ data }: ClientsChartProps) {
         font: {
           family: 'Inter, sans-serif',
           size: 16,
-          weight: '600',
+          weight: 'bold' as const, // ← FIX: Usar 'bold' em vez de '600'
         },
         color: '#111827',
       },

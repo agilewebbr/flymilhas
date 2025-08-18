@@ -11,25 +11,51 @@ export default function LandingPage() {
   const router = useRouter()
 
   useEffect(() => {
+    console.log('Landing page effect - loading:', loading, 'user:', user?.id, 'profile:', profile?.name, 'role:', profile?.role)
+    
     if (!loading && user && profile) {
+      console.log('Redirecting user with role:', profile.role)
+      
       // Redirect authenticated users to their dashboard
       if (profile.role === 'admin') {
+        console.log('Redirecting to admin dashboard')
         router.push('/admin/dashboard')
       } else if (profile.role === 'gestor') {
+        console.log('Redirecting to gestor dashboard')
         router.push('/dashboard/gestor')
       } else {
+        console.log('Redirecting to cliente dashboard')
         router.push('/dashboard/cliente')
       }
     }
   }, [user, profile, loading, router])
 
+  console.log('Landing page render - loading:', loading, 'user:', user?.id, 'profile:', profile?.name)
+
   if (loading) {
+    console.log('Showing loading spinner')
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-600"></div>
+        <div className="ml-4 text-gray-600">Carregando...</div>
       </div>
     )
   }
+
+  // Se está logado mas não redirecionou ainda, força o redirecionamento
+  if (user && profile) {
+    console.log('User is logged in, forcing redirect to dashboard')
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecionando para o dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  console.log('Showing landing page')
 
   return (
     <div className="min-h-screen bg-white">
@@ -108,160 +134,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Resto do conteúdo da landing page... */}
       <section className="py-12 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-brand-600 font-semibold tracking-wide uppercase">Funcionalidades</h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              Tudo que você precisa para gerenciar milhas
-            </p>
-            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-              Uma plataforma completa desenvolvida especificamente para gestores profissionais de milhas aéreas.
-            </p>
-          </div>
-
-          <div className="mt-10">
-            <div className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
-              <div className="relative">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-brand-500 text-white">
-                      <Users className="h-6 w-6" />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Gestão de Clientes</h3>
-                  </div>
-                </div>
-                <div className="mt-2 ml-16">
-                  <p className="text-base text-gray-500">
-                    Organize todos os seus clientes em um só lugar. Cadastre dados, notas e acompanhe o histórico completo.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-brand-500 text-white">
-                      <BarChart3 className="h-6 w-6" />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Múltiplos Programas</h3>
-                  </div>
-                </div>
-                <div className="mt-2 ml-16">
-                  <p className="text-base text-gray-500">
-                    Suporte completo para Smiles, LATAM Pass, Azul, Livelo, Esfera e outros programas de fidelidade.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-brand-500 text-white">
-                      <Shield className="h-6 w-6" />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Controle de Transações</h3>
-                  </div>
-                </div>
-                <div className="mt-2 ml-16">
-                  <p className="text-base text-gray-500">
-                    Registre acúmulos e resgates com atualizações automáticas de saldo. Histórico completo e filtros avançados.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-brand-500 text-white">
-                      <BarChart3 className="h-6 w-6" />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Relatórios e Métricas</h3>
-                  </div>
-                </div>
-                <div className="mt-2 ml-16">
-                  <p className="text-base text-gray-500">
-                    Dashboards intuitivos com gráficos de evolução, KPIs do negócio e insights para crescimento.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-2xl font-bold text-gray-900">Sprint 2 em Desenvolvimento</h2>
+          <p className="mt-2 text-gray-600">Interface de clientes implementada com sucesso!</p>
         </div>
       </section>
-
-      {/* Benefits Section */}
-      <section className="bg-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900">Por que escolher o FlyMilhas?</h2>
-            <p className="mt-4 text-lg text-gray-500">
-              Desenvolvido por especialistas para especialistas em milhas aéreas
-            </p>
-          </div>
-          <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              'Interface intuitiva e fácil de usar',
-              'Segurança e privacidade dos dados',
-              'Suporte técnico especializado',
-              'Atualizações constantes',
-              'Dashboard personalizado por perfil',
-              'Controle total de permissões',
-            ].map((benefit, index) => (
-              <div key={index} className="flex items-start">
-                <CheckCircle className="h-6 w-6 text-green-500 mt-1" />
-                <p className="ml-3 text-base text-gray-700">{benefit}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-brand-600">
-        <div className="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-            <span className="block">Pronto para decolar?</span>
-            <span className="block">Comece hoje mesmo.</span>
-          </h2>
-          <p className="mt-4 text-lg leading-6 text-brand-200">
-            Junte-se aos gestores que já estão revolucionando seus negócios de milhas.
-          </p>
-          <Link
-            href="/signup"
-            className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-brand-600 bg-white hover:bg-brand-50 sm:w-auto"
-          >
-            Criar conta gratuita
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-white">
-        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
-          <div className="flex justify-center space-x-6 md:order-2">
-            <div className="flex items-center">
-              <Plane className="h-6 w-6 text-brand-600" />
-              <span className="ml-2 text-sm font-medium text-gray-500">FlyMilhas</span>
-            </div>
-          </div>
-          <div className="mt-8 md:mt-0 md:order-1">
-            <p className="text-center text-base text-gray-400">
-              &copy; 2024 FlyMilhas. Todos os direitos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

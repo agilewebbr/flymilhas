@@ -47,11 +47,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const fetchProfile = async (userId: string) => {
     try {
+      console.log('Fetching profile for user:', userId)
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
         .single()
+
+      console.log('Profile fetch result:', { data, error })
 
       if (error) {
         console.error('Error fetching profile:', error)
@@ -60,31 +64,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       return data
     } catch (error) {
-      console.error('Error fetching profile:', error)
-      return null
-    }
-  }
-
-  const createProfile = async (userId: string, name: string, role: 'gestor' | 'cliente') => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .insert({
-          user_id: userId,
-          name,
-          role,
-        })
-        .select()
-        .single()
-
-      if (error) {
-        console.error('Error creating profile:', error)
-        return null
-      }
-
-      return data
-    } catch (error) {
-      console.error('Error creating profile:', error)
+      console.error('Exception fetching profile:', error)
       return null
     }
   }
@@ -97,22 +77,32 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   useEffect(() => {
+    console.log('AuthProvider initializing...')
+    
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session?.user?.id || 'No session')
+      
       setSession(session)
       setUser(session?.user ?? null)
       
       if (session?.user) {
-        fetchProfile(session.user.id).then(setProfile)
+        fetchProfile(session.user.id).then((profileData) => {
+          console.log('Initial profile loaded:', profileData?.name || 'No profile')
+          setProfile(profileData)
+          setLoading(false)
+        })
+      } else {
+        setLoading(false)
       }
-      
-      setLoading(false)
     })
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state change:', event, session?.user?.id || 'No session')
+      
       setSession(session)
       setUser(session?.user ?? null)
       
@@ -153,9 +143,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return { error }
     }
 
-    // Profile será criado via trigger do banco ou webhook
-    // Não tentamos criar aqui para evitar problemas de RLS
-    
     return { error: null }
   }
 
@@ -173,6 +160,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signOut,
     refreshProfile,
   }
+
+  console.log('AuthProvider render - loading:', loading, 'user:', user?.id, 'profile:', profile?.name)
 
   return (
     <AuthContext.Provider value={value}>

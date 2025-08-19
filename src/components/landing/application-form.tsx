@@ -18,9 +18,12 @@ import {
   Target,
   Users,
   Award,
-  Zap
+  Zap,
+  AlertCircle
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { leadsService, type CreateLeadData } from '@/services/leads.service'
+import type { Lead } from '@/lib/supabase'
 
 // Esquema de validação com Zod
 const applicationFormSchema = z.object({
@@ -98,6 +101,8 @@ const inicioEvolucaoOptions = [
 export function ApplicationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [leadData, setLeadData] = useState<Lead | null>(null)
 
   const {
     register,
@@ -112,16 +117,45 @@ export function ApplicationForm() {
     setIsSubmitting(true)
     
     try {
-      // Aqui você pode integrar com sua API/backend
-      console.log('Dados do formulário:', data)
-      
-      // Simular envio
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      setIsSubmitted(true)
-      reset()
+      // Usar o service para salvar no Supabase
+      const result = await leadsService.createLead({
+        nomeCompleto: data.nomeCompleto,
+        email: data.email,
+        whatsapp: data.whatsapp,
+        tempoMilhas: data.tempoMilhas,
+        quantidadeClientes: data.quantidadeClientes,
+        objetivoProfissional: data.objetivoProfissional,
+        desafioAtual: data.desafioAtual,
+        inicioEvolucao: data.inicioEvolucao
+      })
+
+      if (result.success) {
+        setIsSubmitted(true)
+        setLeadData(result.data)
+        reset()
+        
+        // Track conversão bem-sucedida
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'conversion', {
+            'send_to': 'AW-XXXXXXXXX/XXXXX', // Substitua pelo seu ID do Google Ads
+            'value': result.score || 50,
+            'currency': 'BRL'
+          })
+        }
+      } else {
+        setError(result.error || 'Erro ao enviar candidatura')
+        
+        // Track erro para análise
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'form_error', {
+            'event_category': 'engagement',
+            'event_label': result.error
+          })
+        }
+      }
     } catch (error) {
-      console.error('Erro ao enviar formulário:', error)
+      console.error('Erro inesperado:', error)
+      setError('Erro de conexão. Verifique sua internet e tente novamente.')
     } finally {
       setIsSubmitting(false)
     }
@@ -177,6 +211,11 @@ export function ApplicationForm() {
                 
                 <p className="text-lg text-muted-foreground mb-6">
                   Você está agora na lista dos 500 candidatos à evolução profissional.
+                  {leadData?.score && (
+                    <span className="block mt-2 text-primary font-semibold">
+                      Score de Qualificação: {leadData.score}/100 pontos
+                    </span>
+                  )}
                 </p>
                 
                 <div className="bg-background/80 rounded-lg p-6 mb-6">
@@ -251,6 +290,7 @@ export function ApplicationForm() {
                     <input
                       {...register('nomeCompleto')}
                       type="text"
+                      onFocus={() => setError(null)}
                       className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                       placeholder="Seu nome completo"
                     />
@@ -268,6 +308,7 @@ export function ApplicationForm() {
                       <input
                         {...register('email')}
                         type="email"
+                        onFocus={() => setError(null)}
                         className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                         placeholder="seu@email.com"
                       />
@@ -283,6 +324,7 @@ export function ApplicationForm() {
                       <input
                         {...register('whatsapp')}
                         type="tel"
+                        onFocus={() => setError(null)}
                         className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                         placeholder="(11) 99999-9999"
                       />
@@ -396,6 +438,19 @@ export function ApplicationForm() {
                       <p className="text-destructive text-sm mt-1">{errors.inicioEvolucao.message}</p>
                     )}
                   </div>
+
+                  {/* Mensagem de Erro */}
+                  {error && (
+                    <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 mb-6">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h4 className="font-semibold text-destructive mb-1">Erro ao enviar candidatura</h4>
+                          <p className="text-sm text-destructive/80">{error}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Botão de Envio */}
                   <div className="pt-6">

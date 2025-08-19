@@ -1,4 +1,3 @@
-// src/app/dashboard/gestor/page.tsx
 'use client'
 
 import { useDashboard } from '@/hooks/useDashboard'
@@ -80,7 +79,6 @@ export default function GestorDashboard() {
             </CardContent>
           </Card>
         </div>
-
         <DashboardMetrics
           totalClients={stats.totalClients}
           newClientsThisMonth={stats.newClientsThisMonth}
@@ -90,7 +88,7 @@ export default function GestorDashboard() {
         <ClientsChart data={stats.clientsPerMonth} />
 
         <RecentClients clients={stats.recentClients} />
-    </div>
-  </AppLayout>
+      </div>
+    </AppLayout>
   )
 }

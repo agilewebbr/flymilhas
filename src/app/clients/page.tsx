@@ -149,7 +149,7 @@ export default function ClientsPage() {
                 {clients.map((client) => (
                   <Link key={client.id} href={`/clients/${client.id}`}>
                     <div className="cursor-pointer transform hover:scale-105 transition-all duration-200 hover:shadow-lg">
-                      <ClientCard client={client} />
+                      <ClientCard client={client} onDelete={deleteClient} />
                     </div>
                   </Link>
                 ))}

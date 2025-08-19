@@ -33,6 +33,20 @@ export default function GestorDashboard() {
         🌟 Tokens configurados com sucesso!
       </div>
 
+      <div className="card p-6 space-y-4">
+        <h2 className="text-large">🎨 Design System v2.0</h2>
+        <p className="text-small">Teste completo dos novos tokens</p>
+        
+        <div className="flex-between">
+          <button className="btn-primary">Botão Primário</button>
+          <button className="btn-secondary">Botão Secundário</button>
+        </div>
+        
+        <div className="fade-in">
+          <p className="text-muted">Animação funcionando! ✨</p>
+        </div>
+      </div>
+
       <DashboardMetrics
         totalClients={stats.totalClients}
         newClientsThisMonth={stats.newClientsThisMonth}

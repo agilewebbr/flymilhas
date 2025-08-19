@@ -13,6 +13,7 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   return (
     <div className="h-screen bg-background overflow-hidden">
@@ -30,7 +31,10 @@ export function AppLayout({ children }: AppLayoutProps) {
         "transform transition-transform duration-300 ease-in-out lg:transform-none",
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        <Sidebar />
+        <Sidebar 
+          collapsed={sidebarCollapsed}
+          onCollapsedChange={setSidebarCollapsed}
+        />
         
         {/* Mobile close button */}
         {sidebarOpen && (
@@ -45,8 +49,11 @@ export function AppLayout({ children }: AppLayoutProps) {
         )}
       </div>
 
-      {/* Main content area - Offset by sidebar width */}
-      <div className="lg:pl-64 flex flex-col h-full">
+      {/* Main content area - Dynamic offset based on sidebar state */}
+      <div className={cn(
+        "flex flex-col h-full transition-all duration-300 ease-in-out",
+        sidebarCollapsed ? "lg:pl-16" : "lg:pl-64"
+      )}>
         {/* Top navigation - Fixed */}
         <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           {/* Mobile menu button */}

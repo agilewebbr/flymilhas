@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -48,11 +47,16 @@ const navigation = [
 
 interface SidebarProps {
   className?: string
+  collapsed?: boolean
+  onCollapsedChange?: (collapsed: boolean) => void
 }
 
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className, collapsed = false, onCollapsedChange }: SidebarProps) {
   const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
+
+  const handleToggleCollapse = () => {
+    onCollapsedChange?.(!collapsed)
+  }
 
   return (
     <div className={cn(
@@ -74,10 +78,14 @@ export function Sidebar({ className }: SidebarProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={handleToggleCollapse}
           className="h-8 w-8"
         >
-          {collapsed ? <Menu className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {collapsed ? (
+            <Menu className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
         </Button>
       </div>
 
@@ -95,6 +103,7 @@ export function Sidebar({ className }: SidebarProps) {
                   collapsed ? "px-2" : "px-3",
                   isActive && "bg-secondary text-secondary-foreground"
                 )}
+                title={collapsed ? item.name : undefined}
               >
                 <item.icon className="h-4 w-4 shrink-0" />
                 {!collapsed && (
@@ -121,7 +130,7 @@ export function Sidebar({ className }: SidebarProps) {
             <span>Sistema Online</span>
           </div>
         ) : (
-          <div className="flex justify-center">
+          <div className="flex justify-center" title="Sistema Online">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
           </div>
         )}

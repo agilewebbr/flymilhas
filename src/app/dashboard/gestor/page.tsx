@@ -26,6 +26,13 @@ export default function GestorDashboard() {
         <p className="text-gray-600 mt-1">Visão geral do seu negócio de milhas</p>
       </header>
 
+      <div className="bg-primary text-primary-foreground p-4 rounded-lg animate-fade-in mb-4">
+        🎨 Design System Funcionando!
+      </div>
+      <div className="bg-secondary text-secondary-foreground p-4 rounded-lg">
+        🌟 Tokens configurados com sucesso!
+      </div>
+
       <DashboardMetrics
         totalClients={stats.totalClients}
         newClientsThisMonth={stats.newClientsThisMonth}

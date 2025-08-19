@@ -3,7 +3,7 @@
 import { useClient } from '@/hooks/useClient'
 
 // SUBSTITUA por um ID real do seu banco de clientes
-const TEST_ID = 'cole-um-id-real-aqui'
+const TEST_ID = 'd4aa7a31-cb68-47e9-b2e8-6c010af4e87f'
 
 export default function TestClientPage() {
   const { client, loading, error } = useClient(TEST_ID)

@@ -15,7 +15,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -24,10 +24,10 @@ export function AppLayout({ children }: AppLayoutProps) {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - Fixed em desktop, overlay em mobile */}
       <div className={cn(
-        "fixed inset-y-0 left-0 z-50 lg:relative lg:translate-x-0",
-        "transform transition-transform duration-300 ease-in-out",
+        "fixed inset-y-0 left-0 z-50 lg:static lg:inset-auto",
+        "transform transition-transform duration-300 ease-in-out lg:transform-none",
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         <Sidebar />
@@ -45,8 +45,8 @@ export function AppLayout({ children }: AppLayoutProps) {
         )}
       </div>
 
-      {/* Main content */}
-      <div className="lg:pl-0 flex flex-col h-screen">
+      {/* Main content area - Ocupa o resto da tela */}
+      <div className="flex flex-col flex-1 min-w-0">
         {/* Top navigation */}
         <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           {/* Mobile menu button */}
@@ -99,7 +99,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
         </header>
 
-        {/* Page content */}
+        {/* Page content - Ocupa toda a altura restante */}
         <main className="flex-1 overflow-auto">
           <div className="animate-fade-in">
             {children}

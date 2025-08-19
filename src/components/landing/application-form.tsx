@@ -154,7 +154,9 @@ export function ApplicationForm() {
         }
       }
     } catch (error) {
-      console.error('Erro inesperado:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Erro inesperado:', error)
+      }
       setError('Erro de conexão. Verifique sua internet e tente novamente.')
     } finally {
       setIsSubmitting(false)

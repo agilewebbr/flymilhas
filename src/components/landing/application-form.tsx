@@ -131,7 +131,7 @@ export function ApplicationForm() {
 
       if (result.success) {
         setIsSubmitted(true)
-        setLeadData(result.data)
+        setLeadData(result.data || null)
         reset()
         
         // Track conversão bem-sucedida

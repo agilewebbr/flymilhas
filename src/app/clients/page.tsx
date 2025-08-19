@@ -56,6 +56,7 @@ export default function ClientsPage() {
         <span>/</span>
         <span className="text-gray-900 font-medium">Clientes</span>
       </nav>
+
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <div className="bg-white shadow">

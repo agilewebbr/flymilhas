@@ -4,7 +4,6 @@ import { useClient } from '@/hooks/useClient'
 import ClientDetails from '@/components/ClientDetails'
 import { ArrowLeft, RefreshCw, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
-import { Metadata } from 'next'
 
 interface ClientPageProps {
   params: {
@@ -124,12 +123,4 @@ export default function ClientPage({ params }: ClientPageProps) {
       <ClientDetails client={client} />
     </div>
   )
-}
-
-// Metadata para SEO
-export async function generateMetadata({ params }: ClientPageProps): Promise<Metadata> {
-  return {
-    title: `Cliente ${params.id} | Flymilhas`,
-    description: 'Detalhes do cliente e gerenciamento de milhas'
-  }
 }

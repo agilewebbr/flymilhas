@@ -83,8 +83,9 @@ export default function RootLayout({
         >
           <AuthProvider>
             {children}
-
-            {/* Analytics - Load after main content */}
+          </AuthProvider>
+        </ThemeProvider>
+        {/* Analytics - Load after main content */}
             <Analytics />
             
             {/* Structured Data for SEO */}
@@ -115,9 +116,6 @@ export default function RootLayout({
                 })
               }}
             />
-          </AuthProvider>
-        </ThemeProvider>
-
         
       </body>
     </html>

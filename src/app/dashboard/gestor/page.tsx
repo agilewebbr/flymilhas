@@ -1,54 +1,111 @@
 'use client'
 
-import { useDashboard } from '@/hooks/useDashboard'
-import { DashboardMetrics } from '@/components/dashboard/DashboardMetrics'
-import { ClientsChart } from '@/components/dashboard/ClientsChart'
-import { RecentClients } from '@/components/dashboard/RecentClients'
-import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton'
-import { DashboardError } from '@/components/dashboard/DashboardError'
-import { AppLayout } from '@/components/app-layout'
+import { useState } from 'react'
+import { Sidebar } from './sidebar'
+import { ThemeToggle } from './theme-toggle'
+import { Button } from './ui/button'
+import { Bell, Search, User, Menu, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
-export default function GestorDashboard() {
-  const { stats, loading, error, refetch } = useDashboard()
+interface AppLayoutProps {
+  children: React.ReactNode
+}
 
-  if (loading) {
-    return (
-      <AppLayout>
-        <DashboardSkeleton />
-      </AppLayout>
-    )
-  }
-
-  if (error || !stats) {
-    return (
-      <AppLayout>
-        <DashboardError error={error || 'Erro desconhecido'} onRetry={refetch} />
-      </AppLayout>
-    )
-  }
+export function AppLayout({ children }: AppLayoutProps) {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <AppLayout>
-      <div className="p-6 space-y-8">
-        {/* Header */}
-        <header className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard do Gestor</h1>
-          <p className="text-muted-foreground">Visão geral do seu negócio de milhas</p>
+    <div className="min-h-screen bg-background flex">
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 z-50 lg:hidden bg-background/80 backdrop-blur-sm"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar - Fixed em desktop, overlay em mobile */}
+      <div className={cn(
+        "fixed inset-y-0 left-0 z-50 lg:static lg:inset-auto",
+        "transform transition-transform duration-300 ease-in-out lg:transform-none",
+        sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      )}>
+        <Sidebar />
+        
+        {/* Mobile close button */}
+        {sidebarOpen && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 -right-12 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        )}
+      </div>
+
+      {/* Main content area - Ocupa o resto da tela */}
+      <div className="flex flex-col flex-1 min-w-0">
+        {/* Top navigation */}
+        <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+          {/* Mobile menu button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Abrir menu</span>
+          </Button>
+
+          {/* Search */}
+          <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+            <div className="relative flex flex-1 max-w-md">
+              <label htmlFor="search-field" className="sr-only">
+                Buscar
+              </label>
+              <Search className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-muted-foreground pl-3" />
+              <input
+                id="search-field"
+                className="block h-full w-full border-0 py-0 pl-10 pr-0 bg-transparent text-foreground placeholder:text-muted-foreground focus:ring-0 sm:text-sm outline-none"
+                placeholder="Buscar clientes..."
+                type="search"
+                name="search"
+              />
+            </div>
+          </div>
+
+          {/* Right side */}
+          <div className="flex items-center gap-x-4 lg:gap-x-6">
+            {/* Notifications */}
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
+                3
+              </span>
+              <span className="sr-only">Ver notificações</span>
+            </Button>
+
+            {/* Theme toggle */}
+            <ThemeToggle />
+
+            {/* Profile dropdown */}
+            <Button variant="ghost" size="icon">
+              <User className="h-5 w-5" />
+              <span className="sr-only">Seu perfil</span>
+            </Button>
+          </div>
         </header>
 
-        {/* Métricas principais */}
-        <DashboardMetrics
-          totalClients={stats.totalClients}
-          newClientsThisMonth={stats.newClientsThisMonth}
-          growthPercentage={stats.growthPercentage}
-        />
-
-        {/* Gráfico de clientes */}
-        <ClientsChart data={stats.clientsPerMonth} />
-
-        {/* Clientes recentes */}
-        <RecentClients clients={stats.recentClients} />
+        {/* Page content - Ocupa toda a altura restante */}
+        <main className="flex-1 overflow-auto">
+          <div className="animate-fade-in">
+            {children}
+          </div>
+        </main>
       </div>
-    </AppLayout>
+    </div>
   )
 }

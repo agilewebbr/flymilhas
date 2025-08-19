@@ -15,7 +15,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="h-screen bg-background overflow-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -24,9 +24,9 @@ export function AppLayout({ children }: AppLayoutProps) {
         />
       )}
 
-      {/* Sidebar - Fixed em desktop, overlay em mobile */}
+      {/* Sidebar - Always fixed */}
       <div className={cn(
-        "fixed inset-y-0 left-0 z-50 lg:static lg:inset-auto",
+        "fixed inset-y-0 left-0 z-50 lg:z-30",
         "transform transition-transform duration-300 ease-in-out lg:transform-none",
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
@@ -37,7 +37,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-4 -right-12 lg:hidden"
+            className="absolute top-4 -right-12 lg:hidden bg-background border"
             onClick={() => setSidebarOpen(false)}
           >
             <X className="h-5 w-5" />
@@ -45,9 +45,9 @@ export function AppLayout({ children }: AppLayoutProps) {
         )}
       </div>
 
-      {/* Main content area - Ocupa o resto da tela */}
-      <div className="flex flex-col flex-1 min-w-0">
-        {/* Top navigation */}
+      {/* Main content area - Offset by sidebar width */}
+      <div className="lg:pl-64 flex flex-col h-full">
+        {/* Top navigation - Fixed */}
         <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           {/* Mobile menu button */}
           <Button
@@ -99,9 +99,9 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
         </header>
 
-        {/* Page content - Ocupa toda a altura restante */}
-        <main className="flex-1 overflow-auto">
-          <div className="animate-fade-in">
+        {/* Page content - Scrollable area */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="animate-fade-in h-full">
             {children}
           </div>
         </main>

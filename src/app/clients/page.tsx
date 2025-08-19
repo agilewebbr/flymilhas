@@ -145,14 +145,18 @@ export default function ClientsPage() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {clients.map((client) => (
-                  <Link key={client.id} href={`/clients/${client.id}`}>
-                    <div className="cursor-pointer transform hover:scale-105 transition-all duration-200 hover:shadow-lg">
-                      <ClientCard client={client} onDelete={deleteClient} />
-                    </div>
-                  </Link>
-                ))}
+              <div key={client.id} className="relative">
+                <Link 
+                  href={`/clients/${client.id}`}
+                  className="absolute inset-0 z-10"
+                  aria-label={`Ver detalhes de ${client.name}`}
+                />
+                <div className="relative z-20 transform hover:scale-105 transition-all duration-200 hover:shadow-lg">
+                  <ClientCard 
+                    client={client} 
+                    onDelete={() => deleteClient(client.id)} 
+                  />
+                </div>
               </div>
 
               {/* Paginação */}

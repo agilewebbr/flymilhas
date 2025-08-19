@@ -6,6 +6,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { ClientCard } from '@/components/ClientCard'
 import { CreateClientModal } from '@/components/CreateClientModal'
 import { Search, Plus, Filter, Users } from 'lucide-react'
+import Link from 'next/link'
 
 export default function ClientsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -47,6 +48,14 @@ export default function ClientsPage() {
 
   return (
     <ProtectedRoute allowedRoles={['gestor']}>
+      {/* Breadcrumb */}
+      <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+        <Link href="/dashboard/gestor" className="hover:text-blue-600 transition-colors">
+          Dashboard
+        </Link>
+        <span>/</span>
+        <span className="text-gray-900 font-medium">Clientes</span>
+      </nav>
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <div className="bg-white shadow">
@@ -135,13 +144,13 @@ export default function ClientsPage() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {clients.map((client) => (
-                  <ClientCard
-                    key={client.id}
-                    client={client}
-                    onDelete={() => handleDeleteClient(client.id)}
-                  />
+                  <Link key={client.id} href={`/clients/${client.id}`}>
+                    <div className="cursor-pointer transform hover:scale-105 transition-all duration-200 hover:shadow-lg">
+                      <ClientCard client={client} />
+                    </div>
+                  </Link>
                 ))}
               </div>
 

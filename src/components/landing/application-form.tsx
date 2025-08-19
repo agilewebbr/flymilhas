@@ -24,6 +24,7 @@ import {
 import { motion } from 'framer-motion'
 import { leadsService, type CreateLeadData } from '@/services/leads.service'
 import type { Lead } from '@/lib/supabase'
+import { analytics, useScrollTracking } from '@/components/Analytics'
 
 // Esquema de validação com Zod
 const applicationFormSchema = z.object({
@@ -103,6 +104,10 @@ export function ApplicationForm() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [leadData, setLeadData] = useState<Lead | null>(null)
+  const [hasStartedForm, setHasStartedForm] = useState(false)
+
+  // Hook para tracking automático de scroll
+  useScrollTracking()
 
   const {
     register,
@@ -134,33 +139,62 @@ export function ApplicationForm() {
         setLeadData(result.data || null)
         reset()
         
-        // Track conversão bem-sucedida
-        if (typeof window !== 'undefined' && (window as any).gtag) {
-          (window as any).gtag('event', 'conversion', {
-            'send_to': 'AW-XXXXXXXXX/XXXXX', // Substitua pelo seu ID do Google Ads
-            'value': result.score || 50,
-            'currency': 'BRL'
+        // 🎯 TRACKING DE CONVERSÃO COMPLETO
+        analytics.trackFormSubmission({
+          lead_score: result.score,
+          tempo_milhas: data.tempoMilhas,
+          quantidade_clientes: data.quantidadeClientes,
+          objetivo_profissional: data.objetivoProfissional,
+          value: result.score || 50,
+          utm_source: new URLSearchParams(window.location.search).get('utm_source') || undefined,
+          utm_medium: new URLSearchParams(window.location.search).get('utm_medium') || undefined,
+          utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || undefined
+        })
+
+        // Track conversão específica do Google Ads (se configurado)
+        const googleAdsConversionId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID
+        if (googleAdsConversionId) {
+          analytics.ga4.trackConversion(googleAdsConversionId, {
+            value: result.score || 50,
+            lead_score: result.score
           })
         }
       } else {
         setError(result.error || 'Erro ao enviar candidatura')
         
         // Track erro para análise
-        if (typeof window !== 'undefined' && (window as any).gtag) {
-          (window as any).gtag('event', 'form_error', {
-            'event_category': 'engagement',
-            'event_label': result.error
-          })
-        }
+        analytics.ga4.trackEvent('form_error', {
+          event_category: 'form_interaction',
+          event_label: result.error || 'unknown_error',
+          error_type: result.error
+        })
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('Erro inesperado:', error)
       }
       setError('Erro de conexão. Verifique sua internet e tente novamente.')
+      
+      // Track erro de conexão
+      analytics.ga4.trackEvent('form_connection_error', {
+        event_category: 'technical_error',
+        event_label: 'connection_failed'
+      })
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // Função para tracking do início do formulário
+  const handleFormStart = () => {
+    if (!hasStartedForm) {
+      setHasStartedForm(true)
+      analytics.trackFormStart({
+        event_category: 'form_interaction',
+        event_label: 'evolution_application_start'
+      })
+    }
+    setError(null)
   }
 
   const beneficiosCandidatura = [
@@ -292,7 +326,7 @@ export function ApplicationForm() {
                     <input
                       {...register('nomeCompleto')}
                       type="text"
-                      onFocus={() => setError(null)}
+                      onFocus={handleFormStart}
                       className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                       placeholder="Seu nome completo"
                     />
@@ -310,7 +344,7 @@ export function ApplicationForm() {
                       <input
                         {...register('email')}
                         type="email"
-                        onFocus={() => setError(null)}
+                        onFocus={handleFormStart}
                         className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                         placeholder="seu@email.com"
                       />
@@ -326,7 +360,7 @@ export function ApplicationForm() {
                       <input
                         {...register('whatsapp')}
                         type="tel"
-                        onFocus={() => setError(null)}
+                        onFocus={handleFormStart}
                         className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                         placeholder="(11) 99999-9999"
                       />

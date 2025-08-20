@@ -27,6 +27,13 @@ import type { Lead } from '@/lib/supabase'
 import * as gtag from '@/lib/gtag'
 import * as fbpixel from '@/lib/fbpixel'
 
+interface FacebookTrackingData {
+  content_name: string
+  content_category: string
+  value: number
+  currency: string
+}
+
 // Esquema de validação com Zod
 const applicationFormSchema = z.object({
   nomeCompleto: z
@@ -149,12 +156,12 @@ export function ApplicationForm() {
 
         // Facebook Pixel
         if (typeof window !== 'undefined' && (window as any).fbq) {
-          const trackingData = {
+          const trackingData: FacebookTrackingData = {
             content_name: 'FlyMilhas Evolution Application',
             content_category: 'Professional Development',
             value: result.score || 50,
             currency: 'BRL'
-          }
+          };
           
           (window as any).fbq('track', 'Lead', trackingData)
           (window as any).fbq('track', 'CompleteRegistration', trackingData)

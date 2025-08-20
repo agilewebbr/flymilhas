@@ -13,7 +13,6 @@ import { FloatingCTA } from '@/components/landing/floating-cta'
 import { LandingNavbar } from '@/components/landing/landing-navbar'
 import { LandingFooter } from '@/components/landing/landing-footer'
 import { useScrollTracking } from '@/hooks/useScrollTracking'
-import * as gtag from '@/lib/gtag'
 
 export const metadata: Metadata = {
   title: 'FlyMilhas - Evolução Profissional | Primeira Plataforma de Crescimento para Gestores de Milhas',

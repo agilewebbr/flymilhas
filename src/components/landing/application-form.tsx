@@ -25,6 +25,7 @@ import { motion } from 'framer-motion'
 import { leadsService, type CreateLeadData } from '@/services/leads.service'
 import type { Lead } from '@/lib/supabase'
 import * as gtag from '@/lib/gtag'
+import * as fbpixel from '@/lib/fbpixel'
 
 // Esquema de validação com Zod
 const applicationFormSchema = z.object({
@@ -148,12 +149,24 @@ export function ApplicationForm() {
 
         // Facebook Pixel
         if (typeof window !== 'undefined' && (window as any).fbq) {
-          (window as any).fbq('track', 'Lead', {
+          const trackingData = {
             content_name: 'FlyMilhas Evolution Application',
-            content_category: 'lead_generation',
+            content_category: 'Professional Development',
             value: result.score || 50,
             currency: 'BRL'
+          }
+          
+          (window as any).fbq('track', 'Lead', trackingData)
+          (window as any).fbq('track', 'CompleteRegistration', trackingData)
+          (window as any).fbq('trackCustom', 'FlyMilhas_Evolution_Application', {
+            experiencia: data.tempoMilhas,
+            clientes_atuais: data.quantidadeClientes,
+            qualification_score: result.score || 50
           })
+          
+          console.log('🔵 FB Pixel: Lead tracked')
+          console.log('🔵 FB Pixel: CompleteRegistration tracked')
+          console.log('🔵 FB Pixel: FlyMilhas_Evolution_Application tracked')
         }
 
         // Track conversão específica do Google Ads (se configurado)
@@ -168,13 +181,8 @@ export function ApplicationForm() {
       } else {
         setError(result.error || 'Erro ao enviar candidatura')
         
-        // Track erro para análise
-        if (typeof window !== 'undefined' && (window as any).gtag) {
-          (window as any).gtag('event', 'form_error', {
-            'event_category': 'form_interaction',
-            'event_label': result.error || 'unknown_error'
-          })
-        }
+        // Track erro - função padronizada
+        gtag.trackFormError('submission_error', result.error || 'unknown_error')
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -183,12 +191,7 @@ export function ApplicationForm() {
       setError('Erro de conexão. Verifique sua internet e tente novamente.')
       
       // Track erro de conexão
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'form_connection_error', {
-          'event_category': 'technical_error',
-          'event_label': 'connection_failed'
-        })
-      }
+      gtag.trackFormError('connection_error', 'connection_failed')
     } finally {
       setIsSubmitting(false)
     }
@@ -202,13 +205,8 @@ export function ApplicationForm() {
       // Google Analytics
       gtag.trackFormStart()
 
-      // Facebook Pixel
-      if (typeof window !== 'undefined' && (window as any).fbq) {
-        (window as any).fbq('track', 'InitiateCheckout', {
-          content_name: 'Evolution Application Form',
-          content_category: 'form_interaction'
-        })
-      }
+      // ADICIONAR Facebook Pixel:
+      fbpixel.trackInitiateCheckout()
     }
     setError(null)
   }

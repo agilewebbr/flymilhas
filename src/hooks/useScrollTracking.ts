@@ -1,4 +1,5 @@
-// hooks/useScrollTracking.ts
+'use client'
+
 import { useEffect } from 'react'
 import * as gtag from '@/lib/gtag'
 
@@ -20,10 +21,7 @@ export const useScrollTracking = () => {
       })
     }
 
-    // Adicionar listener de scroll
     window.addEventListener('scroll', handleScroll, { passive: true })
-    
-    // Cleanup: remover listener quando componente for desmontado
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 }

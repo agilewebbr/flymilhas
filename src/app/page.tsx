@@ -1,3 +1,5 @@
+'use client'
+
 import { Metadata } from 'next'
 import { HeroSection } from '@/components/landing/hero-section'
 import { ProblemSection } from '@/components/landing/problem-section'

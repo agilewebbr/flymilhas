@@ -4,6 +4,8 @@ import './globals.css'
 import { ThemeProvider } from '@/providers/theme-provider'
 import { AuthProvider } from '@/components/AuthProvider'
 import { Analytics } from '@/components/analytics/Analytics'
+import Script from 'next/script'
+import { GA_TRACKING_ID } from '@/lib/gtag'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -71,6 +73,23 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+        {/* Google Analytics */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_TRACKING_ID}', {
+              page_location: window.location.href,
+              page_title: document.title,
+            });
+          `}
+        </Script>
       </head>
       <body className={inter.className}>
         <ThemeProvider

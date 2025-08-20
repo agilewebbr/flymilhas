@@ -27,7 +27,7 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'FlyMilhas - Evolução Profissional',
+        alt: 'FlyMilhas - Gestão Profissional de Milhas',
       },
     ],
   },
@@ -40,11 +40,7 @@ export const metadata: Metadata = {
   verification: {
     google: 'your-google-site-verification-code', // Substitua pelo seu código
     // facebook: 'your-facebook-domain-verification', // Se necessário
-  },
-  alternates: {
-    canonical: 'https://flymilhas.com.br',
-  },
-}
+  }
 }
 
 export default function RootLayout({

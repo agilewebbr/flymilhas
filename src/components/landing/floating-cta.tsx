@@ -18,7 +18,6 @@ export function FloatingCTA() {
   const [isDismissed, setIsDismissed] = useState(false)
   const [currentVariant, setCurrentVariant] = useState(0)
 
-  // Diferentes variações do CTA que rotacionam
   const ctaVariants = [
     {
       icon: Rocket,
@@ -65,7 +64,7 @@ export function FloatingCTA() {
 
     // Rotaciona as variações do CTA a cada 10 segundos
     const rotateVariants = setInterval(() => {
-      setCurrentVariant(prev => (prev + 1) % ctaVariants.length)
+      setCurrentVariant(prev => (prev + 1) % 4) // 4 é o número fixo de variantes
     }, 10000)
 
     window.addEventListener('scroll', handleScroll)
@@ -88,7 +87,7 @@ export function FloatingCTA() {
     setIsDismissed(true)
   }
 
-  const currentCTA = ctaVariants[currentVariant]
+  const currentCTA = ctaVariants[currentVariant] || ctaVariants[0]
 
   return (
     <>
@@ -186,7 +185,7 @@ export function FloatingCTA() {
 
                 {/* Progress Indicator */}
                 <div className="flex justify-center mt-3 gap-1">
-                  {ctaVariants.map((_, index) => (
+                  {[0, 1, 2, 3].map((index) => (
                     <div
                       key={index}
                       className={cn(

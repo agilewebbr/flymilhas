@@ -24,7 +24,6 @@ import {
 import { motion } from 'framer-motion'
 import { leadsService, type CreateLeadData } from '@/services/leads.service'
 import type { Lead } from '@/lib/supabase'
-import { analytics, useScrollTracking } from '@/components/Analytics'
 
 // Esquema de validação com Zod
 const applicationFormSchema = z.object({
@@ -106,9 +105,6 @@ export function ApplicationForm() {
   const [leadData, setLeadData] = useState<Lead | null>(null)
   const [hasStartedForm, setHasStartedForm] = useState(false)
 
-  // Hook para tracking automático de scroll
-  useScrollTracking()
-
   const {
     register,
     handleSubmit,
@@ -139,35 +135,48 @@ export function ApplicationForm() {
         setLeadData(result.data || null)
         reset()
         
-        // 🎯 TRACKING DE CONVERSÃO COMPLETO
-        analytics.trackFormSubmission({
-          lead_score: result.score,
-          tempo_milhas: data.tempoMilhas,
-          quantidade_clientes: data.quantidadeClientes,
-          objetivo_profissional: data.objetivoProfissional,
-          value: result.score || 50,
-          utm_source: new URLSearchParams(window.location.search).get('utm_source') || undefined,
-          utm_medium: new URLSearchParams(window.location.search).get('utm_medium') || undefined,
-          utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || undefined
-        })
+        // 🎯 TRACKING DE CONVERSÃO SIMPLES
+        // Google Analytics
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'lead_generation', {
+            'event_category': 'conversion',
+            'event_label': 'evolution_application',
+            'value': result.score || 50,
+            'lead_score': result.score,
+            'tempo_milhas': data.tempoMilhas,
+            'quantidade_clientes': data.quantidadeClientes
+          })
+        }
+
+        // Facebook Pixel
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+          (window as any).fbq('track', 'Lead', {
+            content_name: 'FlyMilhas Evolution Application',
+            content_category: 'lead_generation',
+            value: result.score || 50,
+            currency: 'BRL'
+          })
+        }
 
         // Track conversão específica do Google Ads (se configurado)
         const googleAdsConversionId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID
-        if (googleAdsConversionId) {
-          analytics.ga4.trackConversion(googleAdsConversionId, {
-            value: result.score || 50,
-            lead_score: result.score
+        if (googleAdsConversionId && typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'conversion', {
+            'send_to': googleAdsConversionId,
+            'value': result.score || 50,
+            'currency': 'BRL'
           })
         }
       } else {
         setError(result.error || 'Erro ao enviar candidatura')
         
         // Track erro para análise
-        analytics.ga4.trackEvent('form_error', {
-          event_category: 'form_interaction',
-          event_label: result.error || 'unknown_error',
-          error_type: result.error
-        })
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'form_error', {
+            'event_category': 'form_interaction',
+            'event_label': result.error || 'unknown_error'
+          })
+        }
       }
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
@@ -176,10 +185,12 @@ export function ApplicationForm() {
       setError('Erro de conexão. Verifique sua internet e tente novamente.')
       
       // Track erro de conexão
-      analytics.ga4.trackEvent('form_connection_error', {
-        event_category: 'technical_error',
-        event_label: 'connection_failed'
-      })
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'form_connection_error', {
+          'event_category': 'technical_error',
+          'event_label': 'connection_failed'
+        })
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -189,10 +200,22 @@ export function ApplicationForm() {
   const handleFormStart = () => {
     if (!hasStartedForm) {
       setHasStartedForm(true)
-      analytics.trackFormStart({
-        event_category: 'form_interaction',
-        event_label: 'evolution_application_start'
-      })
+      
+      // Google Analytics
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'form_start', {
+          'event_category': 'form_interaction',
+          'event_label': 'evolution_application_start'
+        })
+      }
+
+      // Facebook Pixel
+      if (typeof window !== 'undefined' && (window as any).fbq) {
+        (window as any).fbq('track', 'InitiateCheckout', {
+          content_name: 'Evolution Application Form',
+          content_category: 'form_interaction'
+        })
+      }
     }
     setError(null)
   }

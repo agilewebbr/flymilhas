@@ -18,6 +18,7 @@ import {
   Award
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import * as gtag from '@/lib/gtag'
 
 export function CredibilitySection() {
   const scrollToForm = () => {
@@ -245,7 +246,10 @@ export function CredibilitySection() {
               </div>
               
               <Button
-                onClick={scrollToForm}
+                onClick={() => {
+                  gtag.trackCTAClick('Quero Ser Pioneiro', 'credibility_cta', 'credibility_section')
+                  scrollToForm()
+                }}
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold"
               >

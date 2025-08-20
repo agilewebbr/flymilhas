@@ -14,6 +14,7 @@ import {
   ExternalLink
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import * as gtag from '@/lib/gtag'
 
 export function LandingFooter() {
   const scrollToSection = (sectionId: string) => {
@@ -371,7 +372,10 @@ export function LandingFooter() {
               Junte-se aos primeiros 500 gestores selecionados para a primeira turma de elite.
             </p>
             <button
-              onClick={() => scrollToSection('candidatura')}
+              onClick={() => {
+                gtag.trackCTAClick('Candidatar-se Agora', 'footer_cta', 'footer_section')
+                scrollToSection('candidatura')
+              }}
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-3 rounded-lg font-semibold transition-colors"
             >
               Candidatar-se Agora

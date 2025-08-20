@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Plane, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import * as gtag from '@/lib/gtag'
 
 export function LandingNavbar() {
   const [isScrolled, setIsScrolled] = useState(false)

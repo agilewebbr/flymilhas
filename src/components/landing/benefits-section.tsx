@@ -15,6 +15,7 @@ import {
   Users
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import * as gtag from '@/lib/gtag'
 
 export function BenefitsSection() {
   const scrollToForm = () => {
@@ -217,7 +218,10 @@ export function BenefitsSection() {
               </p>
               
               <Button
-                onClick={scrollToForm}
+                onClick={() => {
+                  gtag.trackCTAClick('Começar Minha Evolução Profissional', 'benefits_cta', 'benefits_section')
+                  scrollToForm()
+                }}
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold"
               >

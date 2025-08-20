@@ -10,6 +10,8 @@ import { ApplicationForm } from '@/components/landing/application-form'
 import { FloatingCTA } from '@/components/landing/floating-cta'
 import { LandingNavbar } from '@/components/landing/landing-navbar'
 import { LandingFooter } from '@/components/landing/landing-footer'
+import { useScrollTracking } from '@/hooks/useScrollTracking'
+import * as gtag from '@/lib/gtag'
 
 export const metadata: Metadata = {
   title: 'FlyMilhas - Evolução Profissional | Primeira Plataforma de Crescimento para Gestores de Milhas',
@@ -29,6 +31,9 @@ export const metadata: Metadata = {
 }
 
 export default function LandingPage() {
+  // Ativar tracking de scroll
+  useScrollTracking()
+  
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}

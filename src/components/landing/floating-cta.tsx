@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import * as gtag from '@/lib/gtag'
 
 export function FloatingCTA() {
   const [isVisible, setIsVisible] = useState(false)
@@ -76,6 +77,7 @@ export function FloatingCTA() {
   }, [isDismissed])
 
   const scrollToForm = () => {
+    gtag.trackCTAClick(currentCTA.text, 'floating_cta', 'floating_section')
     const element = document.getElementById('candidatura')
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })

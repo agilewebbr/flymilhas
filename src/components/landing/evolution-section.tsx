@@ -16,6 +16,7 @@ import {
   Calendar
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import * as gtag from '@/lib/gtag'
 
 export function EvolutionSection() {
   const scrollToDemo = () => {
@@ -196,7 +197,10 @@ export function EvolutionSection() {
               </p>
               
               <Button
-                onClick={scrollToDemo}
+                onClick={() => {
+                  gtag.trackCTAClick('Ver Minha Evolução', 'evolution_cta', 'evolution_section')
+                  scrollToDemo()
+                }}
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold"
               >

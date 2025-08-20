@@ -24,6 +24,7 @@ import {
 import { motion } from 'framer-motion'
 import { leadsService, type CreateLeadData } from '@/services/leads.service'
 import type { Lead } from '@/lib/supabase'
+import * as gtag from '@/lib/gtag'
 
 // Esquema de validação com Zod
 const applicationFormSchema = z.object({
@@ -137,16 +138,13 @@ export function ApplicationForm() {
         
         // 🎯 TRACKING DE CONVERSÃO SIMPLES
         // Google Analytics
-        if (typeof window !== 'undefined' && (window as any).gtag) {
-          (window as any).gtag('event', 'lead_generation', {
-            'event_category': 'conversion',
-            'event_label': 'evolution_application',
-            'value': result.score || 50,
-            'lead_score': result.score,
-            'tempo_milhas': data.tempoMilhas,
-            'quantidade_clientes': data.quantidadeClientes
-          })
-        }
+        gtag.trackLeadGeneration({
+          nome: data.nomeCompleto,
+          email: data.email,
+          experiencia: data.tempoMilhas,
+          clientes_atuais: data.quantidadeClientes,
+          qualification_score: result.score || 50
+        })
 
         // Facebook Pixel
         if (typeof window !== 'undefined' && (window as any).fbq) {
@@ -202,12 +200,7 @@ export function ApplicationForm() {
       setHasStartedForm(true)
       
       // Google Analytics
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'form_start', {
-          'event_category': 'form_interaction',
-          'event_label': 'evolution_application_start'
-        })
-      }
+      gtag.trackFormStart()
 
       // Facebook Pixel
       if (typeof window !== 'undefined' && (window as any).fbq) {

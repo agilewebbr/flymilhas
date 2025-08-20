@@ -15,6 +15,7 @@ import {
   Clock
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import * as gtag from '@/lib/gtag'
 
 export function DemoSection() {
   const scrollToForm = () => {
@@ -265,7 +266,10 @@ export function DemoSection() {
               </div>
               
               <Button
-                onClick={scrollToForm}
+                onClick={() => {
+                  gtag.trackCTAClick('Reservar Acesso Prioritário', 'demo_cta', 'demo_section')
+                  scrollToForm()
+                }}
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold"
               >

@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { X, TrendingDown, Clock, AlertTriangle, ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
+import * as gtag from '@/lib/gtag'
 
 export function ProblemSection() {
   const scrollToForm = () => {
@@ -134,7 +135,10 @@ export function ProblemSection() {
                 </p>
                 
                 <Button
-                  onClick={scrollToForm}
+                  onClick={() => {
+                    gtag.trackCTAClick('Quero Evoluir Profissionalmente', 'problem_cta', 'problem_section')
+                    scrollToForm()
+                  }}
                   size="lg"
                   className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold"
                 >

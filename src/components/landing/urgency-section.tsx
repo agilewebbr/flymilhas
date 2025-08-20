@@ -19,6 +19,7 @@ import {
   Settings
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import * as gtag from '@/lib/gtag'
 
 export function UrgencySection() {
   const scrollToForm = () => {
@@ -275,7 +276,10 @@ export function UrgencySection() {
               </div>
               
               <Button
-                onClick={scrollToForm}
+                onClick={() => {
+                  gtag.trackCTAClick('Garantir Minha Evolução Agora', 'urgency_cta', 'urgency_section')
+                  scrollToForm()
+                }}
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold"
               >

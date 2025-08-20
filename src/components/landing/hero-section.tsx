@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Check, ArrowRight, Star, Users, TrendingUp } from 'lucide-react'
 import { motion } from 'framer-motion'
+import * as gtag from '@/lib/gtag'
 
 export function HeroSection() {
   const scrollToForm = () => {
@@ -98,7 +99,10 @@ export function HeroSection() {
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
               <Button
-                onClick={scrollToForm}
+                onClick={() => {
+                  gtag.trackCTAClick('Quero Me Tornar Um Profissional', 'hero_primary_cta', 'hero_section')
+                  scrollToForm()
+                }}
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold"
               >
@@ -107,7 +111,10 @@ export function HeroSection() {
               </Button>
               
               <Button
-                onClick={scrollToEvolution}
+                onClick={() => {
+                  gtag.trackCTAClick('Ver Evolução', 'hero_secondary_cta', 'hero_section')
+                  scrollToEvolution()
+                }}
                 variant="outline"
                 size="lg"
                 className="px-8 py-6 text-lg"

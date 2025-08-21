@@ -63,8 +63,8 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         
         {/* Theme color for mobile browsers */}
-        <meta name="theme-color" content="#ff4500" />
-        <meta name="msapplication-TileColor" content="#ff4500" />
+        <meta name="theme-color" content="#2563eb" />
+        <meta name="msapplication-TileColor" content="#2563eb" />
         
         {/* Preload critical resources */}
         <link rel="preload" as="image" href="/hero-image.jpg" />

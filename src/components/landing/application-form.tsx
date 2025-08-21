@@ -281,7 +281,7 @@ export function ApplicationForm() {
                     <li>✅ Confirmação por email em até 24h</li>
                     <li>✅ Convite para grupo exclusivo de pioneiros</li>
                     <li>✅ Acesso ao roadmap de desenvolvimento</li>
-                    <li>✅ Notificação do lançamento em Q2 2025</li>
+                    <li>✅ Notificação do lançamento em Q3 2025</li>
                   </ul>
                 </div>
                 
@@ -348,7 +348,7 @@ export function ApplicationForm() {
                       {...register('nomeCompleto')}
                       type="text"
                       onFocus={handleFormStart}
-                      className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                       placeholder="Seu nome completo"
                     />
                     {errors.nomeCompleto && (
@@ -366,7 +366,7 @@ export function ApplicationForm() {
                         {...register('email')}
                         type="email"
                         onFocus={handleFormStart}
-                        className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all touch-manipulation"
+                        className="w-full px-4 py-3 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all touch-manipulation"
                         placeholder="seu@email.com"
                       />
                       {errors.email && (
@@ -382,7 +382,7 @@ export function ApplicationForm() {
                         {...register('whatsapp')}
                         type="tel"
                         onFocus={handleFormStart}
-                        className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all touch-manipulation"
+                        className="w-full px-4 py-3 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all touch-manipulation"
                         placeholder="(11) 99999-9999"
                       />
                       {errors.whatsapp && (
@@ -398,7 +398,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('tempoMilhas')}
-                      className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     >
                       <option value="">Selecione uma opção</option>
                       {tempoMilhasOptions.map(option => (
@@ -419,7 +419,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('quantidadeClientes')}
-                      className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
+                      className="w-full h-13 px-4 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
                     >
                       <option value="">Selecione uma opção</option>
                       {quantidadeClientesOptions.map(option => (
@@ -440,7 +440,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('objetivoProfissional')}
-                      className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
+                      className="w-full h-13 px-4 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
                     >
                       <option value="">Selecione uma opção</option>
                       {objetivoProfissionalOptions.map(option => (
@@ -461,7 +461,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('desafioAtual')}
-                      className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
+                      className="w-full h-13 px-4 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
                     >
                       <option value="">Selecione uma opção</option>
                       {desafioAtualOptions.map(option => (
@@ -482,7 +482,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('inicioEvolucao')}
-                      className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
+                      className="w-full h-13 px-4 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
                     >
                       <option value="">Selecione uma opção</option>
                       {inicioEvolucaoOptions.map(option => (

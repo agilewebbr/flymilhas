@@ -29,7 +29,7 @@ export function LandingNavbar() {
 
   return (
     <nav className={cn(
-      "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+      "fixed top-0 left-0 right-0 z-[100] transition-all duration-300",
       isScrolled 
         ? "bg-background/95 backdrop-blur-md border-b border-border shadow-sm" 
         : "bg-transparent"
@@ -99,23 +99,30 @@ export function LandingNavbar() {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden w-11 h-11 p-2 touch-manipulation">
+          <>
+          {/* Overlay para fechar ao clicar fora */}
+          <div 
+            className="fixed inset-0 z-[105] bg-black/20 md:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          ></div>
+
+          <div className="md:hidden fixed top-16 left-0 right-0 z-[110] bg-background border-t border-border shadow-lg touch-manipulation">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-background border-t border-border">
               <button
                 onClick={() => scrollToSection('produto')}
-                className="block px-4 py-4 text-muted-foreground hover:text-foreground transition-colors w-full text-left touch-manipulation"
+                className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
               >
                 Produto
               </button>
               <button
                 onClick={() => scrollToSection('evolucao')}
-                className="block px-4 py-4 text-muted-foreground hover:text-foreground transition-colors w-full text-left touch-manipulation"
+                className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
               >
                 Evolução
               </button>
               <button
                 onClick={() => scrollToSection('candidatura')}
-                className="block px-4 py-4 text-muted-foreground hover:text-foreground transition-colors w-full text-left touch-manipulation"
+                className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
               >
                 Candidatura
               </button>

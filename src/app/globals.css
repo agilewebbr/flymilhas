@@ -265,3 +265,46 @@
     }
   }
 }
+
+/* Mobile menu z-index fix */
+@layer components {
+  .mobile-menu-overlay {
+    z-index: 105;
+  }
+  
+  .mobile-menu {
+    z-index: 110;
+  }
+  
+  .navbar {
+    z-index: 100;
+  }
+  
+  /* Garante que outros elementos não interferem */
+  .floating-cta {
+    z-index: 50;
+  }
+  
+  .scroll-progress-cta {
+    z-index: 40;
+  }
+}
+
+/* Fix para elementos que podem ter z-index alto */
+@media (max-width: 768px) {
+  /* Remove z-index de outros elementos em mobile */
+  .hero-section,
+  .card,
+  .motion-div {
+    z-index: auto !important;
+  }
+  
+  /* Garante que apenas navigation e menu tenham z-index alto */
+  nav {
+    z-index: 100 !important;
+  }
+  
+  .mobile-menu-container {
+    z-index: 110 !important;
+  }
+}

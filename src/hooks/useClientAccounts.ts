@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/components/AuthProvider'
 import { Account } from '@/lib/database.types'
 import { CreateAccountInput } from '@/lib/validations/account'
 
@@ -26,23 +27,21 @@ interface ApiResponse<T> {
 }
 
 export function useClientAccounts(clientId: string) {
+  const { session } = useAuth()
   const [data, setData] = useState<ClientAccountsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchAccounts = async () => {
+    if (!session?.access_token) return
+
     try {
       setLoading(true)
       setError(null)
 
-      const token = localStorage.getItem('supabase.auth.token') || sessionStorage.getItem('supabase.auth.token')
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado')
-      }
-
       const response = await fetch(`/api/gestor/clients/${clientId}/accounts`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         }
       })
@@ -67,16 +66,15 @@ export function useClientAccounts(clientId: string) {
   }
 
   const createAccount = async (accountData: Omit<CreateAccountInput, 'client_id'>) => {
-    try {
-      const token = localStorage.getItem('supabase.auth.token') || sessionStorage.getItem('supabase.auth.token')
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado')
-      }
+    if (!session?.access_token) {
+      return { success: false, error: 'Não autenticado' }
+    }
 
+    try {
       const response = await fetch(`/api/gestor/clients/${clientId}/accounts`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(accountData)
@@ -106,16 +104,15 @@ export function useClientAccounts(clientId: string) {
   }
 
   const deleteAccount = async (accountId: string) => {
-    try {
-      const token = localStorage.getItem('supabase.auth.token') || sessionStorage.getItem('supabase.auth.token')
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado')
-      }
+    if (!session?.access_token) {
+      return { success: false, error: 'Não autenticado' }
+    }
 
+    try {
       const response = await fetch(`/api/gestor/accounts/${accountId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         }
       })
@@ -144,10 +141,10 @@ export function useClientAccounts(clientId: string) {
   }
 
   useEffect(() => {
-    if (clientId) {
+    if (session?.access_token && clientId) {
       fetchAccounts()
     }
-  }, [clientId])
+  }, [session, clientId])
 
   return {
     data,

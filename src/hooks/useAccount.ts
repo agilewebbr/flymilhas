@@ -1,3 +1,4 @@
+import { useAuth } from '@/components/AuthProvider'
 import { UpdateAccountInput } from '@/lib/validations/account'
 
 interface ApiResponse<T> {
@@ -6,18 +7,18 @@ interface ApiResponse<T> {
 }
 
 export function useAccount() {
+  const { session } = useAuth()
   
   const updateAccount = async (accountId: string, data: UpdateAccountInput) => {
-    try {
-      const token = localStorage.getItem('supabase.auth.token') || sessionStorage.getItem('supabase.auth.token')
-      if (!token) {
-        throw new Error('Token de autenticação não encontrado')
-      }
+    if (!session?.access_token) {
+      return { success: false, error: 'Não autenticado' }
+    }
 
+    try {
       const response = await fetch(`/api/gestor/accounts/${accountId}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)

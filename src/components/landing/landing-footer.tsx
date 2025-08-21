@@ -123,7 +123,7 @@ export function LandingFooter() {
   const stats = [
     {
       icon: Users,
-      number: "500",
+      number: "100",
       label: "Vagas Pioneiras"
     },
     {
@@ -369,7 +369,7 @@ export function LandingFooter() {
               Pronto para sua evolução profissional?
             </h3>
             <p className="text-muted-foreground mb-6">
-              Junte-se aos primeiros 500 gestores selecionados para a primeira turma de elite.
+              Junte-se aos primeiros 100 gestores selecionados para a primeira turma de elite.
             </p>
             <button
               onClick={() => {

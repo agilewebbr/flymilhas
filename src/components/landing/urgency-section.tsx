@@ -74,7 +74,7 @@ export function UrgencySection() {
               <span className="text-primary">Única</span>
             </h2>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              Seja um dos primeiros 500 a evoluir para profissional de elite
+              Seja um dos primeiros 100 a evoluir para profissional de elite
             </p>
           </motion.div>
         </div>
@@ -113,7 +113,7 @@ export function UrgencySection() {
                   <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Users className="h-8 w-8 text-primary" />
                   </div>
-                  <div className="text-2xl font-bold text-primary mb-1">500</div>
+                  <div className="text-2xl font-bold text-primary mb-1">100</div>
                   <div className="text-sm text-muted-foreground">Vagas Pioneiras</div>
                 </div>
                 <div className="text-center">
@@ -189,7 +189,7 @@ export function UrgencySection() {
                     <Badge variant="secondary" className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 mb-2">
                       Limitado
                     </Badge>
-                    <p className="font-semibold text-foreground">Apenas 500 vagas para evolução pioneira</p>
+                    <p className="font-semibold text-foreground">Apenas 100 vagas para evolução pioneira</p>
                     <p className="text-sm text-muted-foreground">Qualidade acima de quantidade</p>
                   </div>
                   <div className="text-center">
@@ -203,7 +203,7 @@ export function UrgencySection() {
                     <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 mb-2">
                       Preço
                     </Badge>
-                    <p className="font-semibold text-foreground">Depois dos 500, preços dobram</p>
+                    <p className="font-semibold text-foreground">Depois dos 100, preços dobram</p>
                     <p className="text-sm text-muted-foreground">Vantagem de pioneiro</p>
                   </div>
                 </div>

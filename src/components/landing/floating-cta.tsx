@@ -30,7 +30,7 @@ export function FloatingCTA() {
     {
       icon: Crown,
       text: "Ser Profissional Elite",
-      subtext: "500 vagas restantes",
+      subtext: "100 vagas restantes",
       bgClass: "from-yellow-500 to-orange-500",
       iconColor: "text-white"
     },
@@ -43,7 +43,7 @@ export function FloatingCTA() {
     },
     {
       icon: Users,
-      text: "Juntar aos 500",
+      text: "Juntar aos 100",
       subtext: "Primeiros pioneiros",
       bgClass: "from-purple-500 to-blue-500",
       iconColor: "text-white"

@@ -43,7 +43,7 @@ export function HeroSection() {
               className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6"
             >
               <Star className="h-4 w-4" />
-              Apenas 500 vagas disponíveis
+              Apenas 100 vagas disponíveis
             </motion.div>
 
             {/* Main Headline */}
@@ -79,11 +79,11 @@ export function HeroSection() {
             >
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-muted-foreground">Lançamento Q2 2025</span>
+                <span className="text-muted-foreground">Lançamento Q3 2025</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Users className="h-4 w-4 text-primary" />
-                <span className="text-muted-foreground">500 vagas exclusivas</span>
+                <span className="text-muted-foreground">100 vagas exclusivas</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <TrendingUp className="h-4 w-4 text-primary" />

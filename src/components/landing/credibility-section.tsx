@@ -200,7 +200,7 @@ export function CredibilitySection() {
                   <div className="text-center">
                     <Star className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
                     <h4 className="font-semibold text-foreground">Exclusividade</h4>
-                    <p className="text-sm text-muted-foreground">Primeiros 500 gestores</p>
+                    <p className="text-sm text-muted-foreground">Primeiros 100 gestores</p>
                   </div>
                   <div className="text-center">
                     <Award className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
@@ -236,7 +236,7 @@ export function CredibilitySection() {
               </div>
               
               <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                Seja um dos primeiros 500 gestores a fazer essa evolução. Sua vantagem competitiva começa agora.
+                Seja um dos primeiros 100 gestores a fazer essa evolução. Sua vantagem competitiva começa agora.
               </p>
               
               <div className="bg-background/80 rounded-lg p-6 mb-8">

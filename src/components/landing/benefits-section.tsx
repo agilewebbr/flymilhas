@@ -186,7 +186,7 @@ export function BenefitsSection() {
               <div className="text-muted-foreground">Dias para Evolução</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">500</div>
+              <div className="text-4xl font-bold text-primary mb-2">100</div>
               <div className="text-muted-foreground">Vagas Exclusivas</div>
             </div>
             <div className="text-center">

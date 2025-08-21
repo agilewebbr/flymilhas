@@ -267,7 +267,7 @@ export function ApplicationForm() {
                 </h2>
                 
                 <p className="text-lg text-muted-foreground mb-6">
-                  Você está agora na lista dos 500 candidatos à evolução profissional.
+                  Você está agora na lista dos 100 candidatos à evolução profissional.
                   {leadData?.score && (
                     <span className="block mt-2 text-primary font-semibold">
                       Score de Qualificação: {leadData.score}/100 pontos
@@ -313,7 +313,7 @@ export function ApplicationForm() {
               <span className="text-primary">Evolução</span>
             </h2>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              Torne-se um dos 500 profissionais de elite
+              Torne-se um dos 100 profissionais de elite
             </p>
           </motion.div>
         </div>
@@ -580,7 +580,7 @@ export function ApplicationForm() {
                 </div>
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <p>🔒 Dados protegidos e seguros</p>
-                  <p>👑 Apenas 500 selecionados</p>
+                  <p>👑 Apenas 100 selecionados</p>
                   <p>🚀 Evolução garantida em 90 dias</p>
                 </div>
               </CardContent>

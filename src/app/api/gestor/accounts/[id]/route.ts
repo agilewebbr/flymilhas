@@ -288,7 +288,7 @@ export async function DELETE(
         removed_account: {
           id: accountId,
           program_name: account.program_name,
-          client_name: account.clients.name
+          client_name: account.clients[0].name
         }
       },
       error: null

@@ -195,3 +195,39 @@
     transition: transform 0.1s ease;
   }
 }
+
+/* Prevent horizontal scroll */
+@layer base {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  /* Mobile container fixes */
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      max-width: 100%;
+    }
+    
+    /* Force all children to respect container width */
+    .form-container * {
+      max-width: 100%;
+      min-width: 0;
+    }
+    
+    /* Specific form field fixes */
+    input, select, textarea {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+    }
+  }
+}

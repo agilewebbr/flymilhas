@@ -102,8 +102,8 @@ const desafioAtualOptions = [
 
 const inicioEvolucaoOptions = [
   { value: 'imediato', label: 'Imediatamente' },
-  { value: 'q2-2025', label: 'Q2 2025 (no lançamento)' },
-  { value: 'q3-2025', label: 'Q3 2025' },
+  { value: 'q2-2025', label: 'Q3 2025 (no lançamento)' },
+  { value: 'q3-2025', label: 'Q4 2025' },
   { value: 'nao-sei', label: 'Ainda não sei' }
 ]
 
@@ -248,7 +248,7 @@ export function ApplicationForm() {
 
   if (isSubmitted) {
     return (
-      <section id="candidatura" className="py-16 lg:py-24 bg-muted/30">
+      <section id="candidatura" className="py-12 lg:py-16 xl:py-24 bg-muted/30 overflow-x-hidden">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -298,7 +298,7 @@ export function ApplicationForm() {
 
   return (
     <section id="candidatura" className="py-16 lg:py-24 bg-muted/30">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
         <div className="text-center mb-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -318,17 +318,17 @@ export function ApplicationForm() {
           </motion.div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Formulário */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="lg:col-span-2"
+            className="lg:col-span-2 w-full min-w-0"
           >
             <Card>
-              <CardContent className="p-6 md:p-8">
+              <CardContent className="p-4 md:p-6 lg:p-8">
                 <div className="mb-8">
                   <h3 className="text-2xl font-bold text-foreground mb-4">
                     Formulário de Candidatura
@@ -357,7 +357,7 @@ export function ApplicationForm() {
                   </div>
 
                   {/* Email e WhatsApp */}
-                  <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+                  <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
                         Email profissional *
@@ -419,7 +419,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('quantidadeClientes')}
-                      className="w-full h-13 px-4 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
+                      className="w-full px-4 py-3 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     >
                       <option value="">Selecione uma opção</option>
                       {quantidadeClientesOptions.map(option => (
@@ -440,7 +440,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('objetivoProfissional')}
-                      className="w-full h-13 px-4 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
+                      className="w-full px-4 py-3 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     >
                       <option value="">Selecione uma opção</option>
                       {objetivoProfissionalOptions.map(option => (
@@ -461,7 +461,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('desafioAtual')}
-                      className="w-full h-13 px-4 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
+                      className="w-full px-4 py-3 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     >
                       <option value="">Selecione uma opção</option>
                       {desafioAtualOptions.map(option => (
@@ -482,7 +482,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('inicioEvolucao')}
-                      className="w-full h-13 px-4 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
+                      className="w-full px-4 py-3 text-base border-2 border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                     >
                       <option value="">Selecione uma opção</option>
                       {inicioEvolucaoOptions.map(option => (
@@ -541,7 +541,7 @@ export function ApplicationForm() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="space-y-6"
+            className="space-y-4 lg:space-y-6 w-full min-w-0"
           >
             <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
               <CardContent className="p-6">

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
-// Types definidos localmente
 interface AccountMetrics {
   totalAccounts: number
   totalMiles: number
@@ -53,13 +52,13 @@ export function useDashboardData(): UseDashboardDataReturn {
       setError(null)
 
       const [metricsRes, distributionRes, clientsRes] = await Promise.all([
-        fetch('/api/dashboard/metrics', { cache: 'no-cache' }),
-        fetch('/api/dashboard/company-distribution', { cache: 'no-cache' }),
-        fetch('/api/dashboard/top-clients', { cache: 'no-cache' })
+        fetch('/api/dashboard/metrics'),
+        fetch('/api/dashboard/company-distribution'),
+        fetch('/api/dashboard/top-clients')
       ])
 
       if (!metricsRes.ok || !distributionRes.ok || !clientsRes.ok) {
-        throw new Error(`APIs com erro: ${metricsRes.status}, ${distributionRes.status}, ${clientsRes.status}`)
+        throw new Error('Erro ao buscar dados das APIs')
       }
 
       const [metricsData, distributionData, clientsData] = await Promise.all([
@@ -68,14 +67,8 @@ export function useDashboardData(): UseDashboardDataReturn {
         clientsRes.json() as Promise<ApiResponse<TopClient[]>>
       ])
 
-      if (metricsData.error) {
-        throw new Error(`Metrics: ${metricsData.error}`)
-      }
-      if (distributionData.error) {
-        throw new Error(`Distribution: ${distributionData.error}`)
-      }
-      if (clientsData.error) {
-        throw new Error(`Clients: ${clientsData.error}`)
+      if (metricsData.error || distributionData.error || clientsData.error) {
+        throw new Error('Erro nos dados retornados pelas APIs')
       }
 
       setMetrics(metricsData.data)

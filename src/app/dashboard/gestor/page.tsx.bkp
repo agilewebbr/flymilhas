@@ -1,0 +1,173 @@
+'use client'
+
+// ==========================================
+// FLYMILHAS - DASHBOARD GESTOR INTEGRADO
+// ==========================================
+
+import { useDashboard } from '@/hooks/useDashboard'
+import { useDashboardData } from '@/hooks/useDashboardData'
+import { DashboardMetrics } from '@/components/dashboard/DashboardMetrics'
+import { ClientsChart } from '@/components/dashboard/ClientsChart'
+import { RecentClients } from '@/components/dashboard/RecentClients'
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton'
+import { DashboardError } from '@/components/dashboard/DashboardError'
+import { AppLayout } from '@/components/app-layout'
+
+// Novos componentes para contas de milhas
+import { AccountsMetrics } from '@/components/dashboard/AccountsMetrics'
+import { CompanyDistribution } from '@/components/dashboard/CompanyDistribution'
+
+export default function GestorDashboard() {
+  // Hook existente (clientes)
+  const { stats, loading: clientsLoading, error: clientsError, refetch } = useDashboard()
+  
+  // Novo hook (contas de milhas)
+  const { 
+    metrics: accountsMetrics, 
+    companyDistribution, 
+    topClients,
+    loading: accountsLoading, 
+    error: accountsError 
+  } = useDashboardData()
+
+  // Estados combinados
+  const loading = clientsLoading || accountsLoading
+  const error = clientsError || accountsError
+
+  if (loading) {
+    return (
+      <AppLayout>
+        <DashboardSkeleton />
+      </AppLayout>
+    )
+  }
+
+  if (error) {
+    return (
+      <AppLayout>
+        <DashboardError error={error} onRetry={refetch} />
+      </AppLayout>
+    )
+  }
+
+  return (
+    <AppLayout>
+      <div className="p-6 space-y-8">
+        {/* Header */}
+        <header className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard do Gestor</h1>
+          <p className="text-muted-foreground">Visão geral do seu negócio de milhas</p>
+        </header>
+
+        {/* Métricas de Clientes (existente) */}
+        {stats && (
+          <DashboardMetrics
+            totalClients={stats.totalClients}
+            newClientsThisMonth={stats.newClientsThisMonth}
+            growthPercentage={stats.growthPercentage}
+          />
+        )}
+
+        {/* NOVO: Métricas de Contas de Milhas */}
+        {accountsMetrics && (
+          <AccountsMetrics
+            totalAccounts={accountsMetrics.totalAccounts}
+            totalMiles={accountsMetrics.totalMiles}
+            averageMilesPerClient={accountsMetrics.averageMilesPerClient}
+          />
+        )}
+
+        {/* Layout em Grid para Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* Gráfico de clientes (existente) */}
+          {stats?.clientsPerMonth && (
+            <div className="lg:col-span-1">
+              <ClientsChart data={stats.clientsPerMonth} />
+            </div>
+          )}
+
+          {/* NOVO: Distribuição por Companhia */}
+          {companyDistribution.length > 0 && (
+            <div className="lg:col-span-1">
+              <CompanyDistribution data={companyDistribution} />
+            </div>
+          )}
+        </div>
+
+        {/* Seção de Clientes */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* Clientes recentes (existente) */}
+          {stats?.recentClients && (
+            <div className="lg:col-span-1">
+              <RecentClients clients={stats.recentClients} />
+            </div>
+          )}
+
+          {/* NOVO: Top Clientes por Milhas */}
+          {topClients.length > 0 && (
+            <div className="lg:col-span-1">
+              <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                <div className="flex flex-col space-y-1.5 p-6">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight">
+                    🏆 Top Clientes por Milhas
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Clientes com maiores saldos de milhas
+                  </p>
+                </div>
+                <div className="p-6 pt-0">
+                  <div className="space-y-4">
+                    {topClients.slice(0, 5).map((client, index) => (
+                      <div key={client.id} className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                            <span className="text-sm font-medium">#{index + 1}</span>
+                          </div>
+                          <div>
+                            <p className="font-medium">{client.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {client.accountCount} contas
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold">
+                            {client.totalMiles.toLocaleString('pt-BR')}
+                          </p>
+                          <p className="text-sm text-muted-foreground">milhas</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Debug - apenas em desenvolvimento */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="rounded-lg border bg-muted/50 p-4">
+            <details>
+              <summary className="cursor-pointer font-medium mb-2">
+                🔍 Debug Info (Desenvolvimento)
+              </summary>
+              <div className="bg-background rounded p-4 mt-2">
+                <pre className="text-xs overflow-auto whitespace-pre-wrap">
+                  {JSON.stringify({
+                    clientsStats: stats,
+                    accountsMetrics,
+                    companyDistribution: companyDistribution.length,
+                    topClients: topClients.length
+                  }, null, 2)}
+                </pre>
+              </div>
+            </details>
+          </div>
+        )}
+      </div>
+    </AppLayout>
+  )
+}

@@ -1,13 +1,68 @@
-import { Client } from '@/lib/database.types'
+'use client'
+
+import { useState } from 'react'
+import { Client, Account } from '@/lib/database.types'
 import ClientHeader from './ClientHeader'
 import ClientStats from './ClientStats'
-import { Plus, CreditCard, History, Settings, AlertCircle } from 'lucide-react'
+import AccountCard from './AccountCard'
+import CreateAccountModal from './CreateAccountModal'
+import EditAccountModal from './EditAccountModal'
+import { useClientAccounts } from '@/hooks/useClientAccounts'
+import { useAccount } from '@/hooks/useAccount'
+import { CreateAccountInput, UpdateAccountInput } from '@/lib/validations/account'
+import { Plus, CreditCard, History, Settings, AlertCircle, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 interface ClientDetailsProps {
   client: Client
 }
 
 export default function ClientDetails({ client }: ClientDetailsProps) {
+  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [editingAccount, setEditingAccount] = useState<Account | null>(null)
+
+  // Hooks para contas
+  const { 
+    data: accountsData, 
+    loading: accountsLoading, 
+    error: accountsError,
+    refetch: refetchAccounts,
+    createAccount,
+    deleteAccount
+  } = useClientAccounts(client.id)
+  const { updateAccount } = useAccount()
+
+  // Handlers para contas
+  const handleCreateAccount = async (accountData: Omit<CreateAccountInput, 'client_id'>) => {
+    return await createAccount(accountData)
+  }
+
+  const handleUpdateAccount = async (accountId: string, data: UpdateAccountInput) => {
+    const result = await updateAccount(accountId, data)
+    if (result.success) {
+      await refetchAccounts()
+    }
+    return result
+  }
+
+  const handleEditAccount = (account: Account) => {
+    setEditingAccount(account)
+    setEditModalOpen(true)
+  }
+
+  const handleDeleteAccount = async (accountId: string) => {
+    if (confirm('Tem certeza que deseja remover esta conta? Esta ação não pode ser desfeita.')) {
+      await deleteAccount(accountId)
+    }
+  }
+
+  const handleViewTransactions = (accountId: string) => {
+    // TODO: Implementar na próxima task
+    console.log('Ver transações da conta:', accountId)
+  }
+
   return (
     <div className="space-y-6">
       {/* Header do Cliente */}
@@ -16,33 +71,88 @@ export default function ClientDetails({ client }: ClientDetailsProps) {
       {/* Stats do Cliente */}
       <ClientStats client={client} />
 
-      {/* Seção de Contas de Milhas (Placeholder para Sprint 3) */}
+      {/* Seção de Contas de Milhas - IMPLEMENTAÇÃO REAL */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
           <div>
             <h3 className="text-xl font-semibold text-gray-900">Contas de Milhas</h3>
-            <p className="text-gray-600 text-sm mt-1">Gerencie as contas de milhas deste cliente</p>
+            <p className="text-gray-600 text-sm mt-1">Gerencie as contas de programas de fidelidade</p>
           </div>
-          <button className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 w-full sm:w-auto justify-center sm:justify-start">
-            <Plus className="h-4 w-4" />
-            <span>Adicionar Conta</span>
-          </button>
+          <Button onClick={() => setCreateModalOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Adicionar Conta
+          </Button>
         </div>
 
-        {/* Placeholder para Sprint 3 */}
-        <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-lg">
-          <div className="h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CreditCard className="h-8 w-8 text-gray-400" />
+        {/* Loading das contas */}
+        {accountsLoading && (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin mr-2" />
+            Carregando contas...
           </div>
-          <h4 className="text-lg font-medium text-gray-900 mb-2">Nenhuma conta cadastrada</h4>
-          <p className="text-gray-600 mb-4 max-w-md mx-auto">
-            Este cliente ainda não possui contas de milhas cadastradas. Adicione a primeira conta para começar o gerenciamento.
-          </p>
-          <div className="inline-flex items-center space-x-2 text-blue-600 font-medium text-sm bg-blue-50 px-3 py-2 rounded-full">
-            <Settings className="h-4 w-4" />
-            <span>Funcionalidade do Sprint 3</span>
-          </div>
-        </div>
+        )}
+
+        {/* Erro nas contas */}
+        {accountsError && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{accountsError}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* Conteúdo das contas */}
+        {accountsData && !accountsLoading && (
+          <>
+            {/* Resumo */}
+            {accountsData.summary.total_accounts > 0 && (
+              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-blue-600 font-medium">Total de Contas:</span>
+                    <div className="text-xl font-bold text-blue-800">
+                      {accountsData.summary.total_accounts}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-blue-600 font-medium">Saldo Total:</span>
+                    <div className="text-xl font-bold text-blue-800">
+                      {new Intl.NumberFormat('pt-BR').format(accountsData.summary.total_balance)} pontos
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Grid de contas */}
+            {accountsData.accounts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {accountsData.accounts.map((account) => (
+                  <AccountCard
+                    key={account.id}
+                    account={account}
+                    onEdit={handleEditAccount}
+                    onDelete={handleDeleteAccount}
+                    onViewTransactions={handleViewTransactions}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-lg">
+                <div className="h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CreditCard className="h-8 w-8 text-gray-400" />
+                </div>
+                <h4 className="text-lg font-medium text-gray-900 mb-2">Nenhuma conta cadastrada</h4>
+                <p className="text-gray-600 mb-4 max-w-md mx-auto">
+                  Este cliente ainda não possui contas de milhas cadastradas. Adicione a primeira conta para começar o gerenciamento.
+                </p>
+                <Button onClick={() => setCreateModalOpen(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Adicionar Primeira Conta
+                </Button>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* Seção de Histórico (Placeholder para Sprint 3) */}
@@ -95,6 +205,22 @@ export default function ClientDetails({ client }: ClientDetailsProps) {
           </div>
         </div>
       </div>
+
+      {/* Modais */}
+      <CreateAccountModal
+        open={createModalOpen}
+        onOpenChange={setCreateModalOpen}
+        onCreateAccount={handleCreateAccount}
+        clientName={client.name}
+      />
+
+      <EditAccountModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        account={editingAccount}
+        onUpdateAccount={handleUpdateAccount}
+        clientName={client.name}
+      />
     </div>
   )
 }

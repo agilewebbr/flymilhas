@@ -86,7 +86,7 @@ export function LandingNavbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="md:hidden w-11 h-11 p-2 touch-manipulation"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? (
@@ -99,23 +99,23 @@ export function LandingNavbar() {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden">
+          <div className="md:hidden w-11 h-11 p-2 touch-manipulation">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-background border-t border-border">
               <button
                 onClick={() => scrollToSection('produto')}
-                className="block px-3 py-2 text-muted-foreground hover:text-foreground transition-colors w-full text-left"
+                className="block px-4 py-4 text-muted-foreground hover:text-foreground transition-colors w-full text-left touch-manipulation"
               >
                 Produto
               </button>
               <button
                 onClick={() => scrollToSection('evolucao')}
-                className="block px-3 py-2 text-muted-foreground hover:text-foreground transition-colors w-full text-left"
+                className="block px-4 py-4 text-muted-foreground hover:text-foreground transition-colors w-full text-left touch-manipulation"
               >
                 Evolução
               </button>
               <button
                 onClick={() => scrollToSection('candidatura')}
-                className="block px-3 py-2 text-muted-foreground hover:text-foreground transition-colors w-full text-left"
+                className="block px-4 py-4 text-muted-foreground hover:text-foreground transition-colors w-full text-left touch-manipulation"
               >
                 Candidatura
               </button>

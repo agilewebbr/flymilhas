@@ -120,7 +120,7 @@ export function UrgencySection() {
                   <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Calendar className="h-8 w-8 text-primary" />
                   </div>
-                  <div className="text-2xl font-bold text-primary mb-1">Q2</div>
+                  <div className="text-2xl font-bold text-primary mb-1">Q3</div>
                   <div className="text-sm text-muted-foreground">Lançamento 2025</div>
                 </div>
                 <div className="text-center">
@@ -196,7 +196,7 @@ export function UrgencySection() {
                     <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 mb-2">
                       Cronograma
                     </Badge>
-                    <p className="font-semibold text-foreground">Evolução começa em Q2 2025</p>
+                    <p className="font-semibold text-foreground">Evolução começa em Q4 2025</p>
                     <p className="text-sm text-muted-foreground">Timeline transparente</p>
                   </div>
                   <div className="text-center">

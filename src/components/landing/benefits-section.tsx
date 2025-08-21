@@ -190,7 +190,7 @@ export function BenefitsSection() {
               <div className="text-muted-foreground">Vagas Exclusivas</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">Q2</div>
+              <div className="text-4xl font-bold text-primary mb-2">Q3</div>
               <div className="text-muted-foreground">Lançamento 2025</div>
             </div>
           </div>

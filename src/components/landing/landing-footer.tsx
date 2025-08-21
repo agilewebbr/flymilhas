@@ -128,7 +128,7 @@ export function LandingFooter() {
     },
     {
       icon: Calendar,
-      number: "Q2",
+      number: "Q3",
       label: "Lançamento 2025"
     },
     {

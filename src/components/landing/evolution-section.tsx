@@ -102,7 +102,7 @@ export function EvolutionSection() {
             
             <div className="flex items-center justify-center gap-2 mt-6">
               <Calendar className="h-5 w-5 text-primary" />
-              <span className="text-lg font-medium text-primary">Lançamento Q2 2025</span>
+              <span className="text-lg font-medium text-primary">Lançamento Q3 2025</span>
             </div>
           </motion.div>
         </div>

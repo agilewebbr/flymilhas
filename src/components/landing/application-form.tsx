@@ -102,8 +102,8 @@ const desafioAtualOptions = [
 
 const inicioEvolucaoOptions = [
   { value: 'imediato', label: 'Imediatamente' },
-  { value: 'q2-2025', label: 'Q3 2025 (no lançamento)' },
-  { value: 'q3-2025', label: 'Q4 2025' },
+  { value: 'q3-2025', label: 'Q3 2025 (no lançamento)' },
+  { value: 'q4-2025', label: 'Q4 2025' },
   { value: 'nao-sei', label: 'Ainda não sei' }
 ]
 

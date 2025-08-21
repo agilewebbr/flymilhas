@@ -6,27 +6,34 @@ import { ClientsChart } from '@/components/dashboard/ClientsChart'
 import { RecentClients } from '@/components/dashboard/RecentClients'
 import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton'
 import { DashboardError } from '@/components/dashboard/DashboardError'
+import { AppLayout } from '@/components/app-layout'
 
 export default function GestorDashboard() {
   const { stats, loading, error, refetch } = useDashboard()
 
-  console.log('Dashboard render:', { stats, loading, error }) // Debug
-
   if (loading) {
-    return <DashboardSkeleton />
+    return (
+      <AppLayout>
+        <DashboardSkeleton />
+      </AppLayout>
+    )
   }
 
   if (error || !stats) {
-    return <DashboardError error={error || 'Erro desconhecido'} onRetry={refetch} />
+    return (
+      <AppLayout>
+        <DashboardError error={error || 'Erro desconhecido'} onRetry={refetch} />
+      </AppLayout>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <AppLayout>
       <div className="p-6 space-y-8">
         {/* Header */}
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Dashboard do Gestor</h1>
-          <p className="text-gray-600">Visão geral do seu negócio de milhas</p>
+          <p className="text-muted-foreground">Visão geral do seu negócio de milhas</p>
         </header>
 
         {/* Métricas principais */}
@@ -42,6 +49,6 @@ export default function GestorDashboard() {
         {/* Clientes recentes */}
         <RecentClients clients={stats.recentClients} />
       </div>
-    </div>
+    </AppLayout>
   )
 }

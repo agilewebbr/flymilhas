@@ -76,7 +76,6 @@ export function useDashboardData(): UseDashboardDataReturn {
       setTopClients(clientsData.data || [])
 
     } catch (err) {
-      console.error('Erro ao buscar dados do dashboard:', err)
       setError(err instanceof Error ? err.message : 'Erro desconhecido')
     } finally {
       setLoading(false)

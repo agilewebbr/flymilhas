@@ -2,22 +2,22 @@
 
 import { useDashboardData } from '@/hooks/useDashboardData'
 
-// Import seguro do AppLayout com fallback nomeado
+// Fallback component definido fora do try-catch
+function AppLayoutFallback({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto py-8">{children}</div>
+    </div>
+  )
+}
+
+// Import seguro do AppLayout
 let AppLayout: any
 
 try {
   const appLayoutModule = require('@/components/app-layout')
   AppLayout = appLayoutModule.AppLayout
 } catch (e) {
-  // Fallback com displayName próprio
-  function AppLayoutFallback({ children }: { children: React.ReactNode }) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto py-8">{children}</div>
-      </div>
-    )
-  }
-  AppLayoutFallback.displayName = 'AppLayoutFallback'
   AppLayout = AppLayoutFallback
 }
 

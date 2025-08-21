@@ -1,5 +1,5 @@
 // src/services/leads.service.ts
-import { supabase, Lead, getUTMParams } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 export interface CreateLeadData {
   nomeCompleto: string
@@ -14,16 +14,39 @@ export interface CreateLeadData {
 
 export interface LeadResponse {
   success: boolean
-  data?: Lead
+  data?: any
   error?: string
   score?: number
+}
+
+// Função para capturar UTMs
+function getUTMParams() {
+  if (typeof window === 'undefined') return {}
+  
+  const urlParams = new URLSearchParams(window.location.search)
+  const referrer = document.referrer || undefined
+  const userAgent = navigator.userAgent
+  
+  return {
+    utm_source: urlParams.get('utm_source') || undefined,
+    utm_medium: urlParams.get('utm_medium') || undefined,
+    utm_campaign: urlParams.get('utm_campaign') || undefined,
+    utm_term: urlParams.get('utm_term') || undefined,
+    utm_content: urlParams.get('utm_content') || undefined,
+    referrer,
+    user_agent: userAgent
+  }
 }
 
 class LeadsService {
   async createLead(data: CreateLeadData): Promise<LeadResponse> {
     try {
+      console.log('🔍 DEBUG: Iniciando createLead com dados:', data)
+      console.log('🔍 DEBUG: Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+      console.log('🔍 DEBUG: Supabase Key existe:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+
       // Converter dados do formulário para o formato do banco
-      const leadData: Omit<Lead, 'id' | 'created_at' | 'updated_at'> = {
+      const leadData = {
         nome_completo: data.nomeCompleto,
         email: data.email.toLowerCase().trim(),
         whatsapp: this.formatWhatsApp(data.whatsapp),
@@ -33,39 +56,54 @@ class LeadsService {
         desafio_atual: data.desafioAtual,
         inicio_evolucao: data.inicioEvolucao,
         status: 'novo',
-        ...getUTMParams() // Adiciona UTMs automaticamente
+        // Campos UTM opcionais
+        ...getUTMParams()
       }
 
-      // Verificar se já existe lead com este email
-      const { data: existingLead } = await supabase
+      console.log('🔍 DEBUG: Dados formatados para inserção:', leadData)
+
+      // CORREÇÃO: Verificar email existente sem .single()
+      const { data: existingLeads, error: checkError } = await supabase
         .from('leads')
         .select('id, email, score')
         .eq('email', leadData.email)
-        .single()
+        .limit(1)
 
-      if (existingLead) {
+      console.log('🔍 DEBUG: Verificação de email existente:', { existingLeads, checkError })
+
+      if (checkError) {
+        console.error('🔍 DEBUG: Erro ao verificar email:', checkError)
+        return {
+          success: false,
+          error: 'Erro ao verificar dados. Tente novamente.'
+        }
+      }
+
+      if (existingLeads && existingLeads.length > 0) {
         return {
           success: false,
           error: 'Este email já está cadastrado. Você já está na lista dos 500!'
         }
       }
 
-      // Inserir novo lead
+      // CORREÇÃO: Inserir novo lead com estrutura simplificada
       const { data: newLead, error } = await supabase
         .from('leads')
         .insert([leadData])
         .select('*')
         .single()
 
+      console.log('🔍 DEBUG: Resultado da inserção:', { newLead, error })
+
       if (error) {
-        console.error('Erro ao salvar lead:', error)
+        console.error('🔍 DEBUG: Erro detalhado ao salvar lead:', JSON.stringify(error, null, 2))
         return {
           success: false,
           error: 'Erro interno. Tente novamente em alguns minutos.'
         }
       }
 
-      // Log para analytics (opcional)
+      // Log para analytics
       this.trackLeadCreation(newLead)
 
       return {
@@ -75,7 +113,7 @@ class LeadsService {
       }
 
     } catch (error) {
-      console.error('Erro inesperado ao criar lead:', error)
+      console.error('🔍 DEBUG: Erro inesperado completo:', JSON.stringify(error, null, 2))
       return {
         success: false,
         error: 'Erro inesperado. Verifique sua conexão e tente novamente.'
@@ -99,7 +137,7 @@ class LeadsService {
     return `+55${numbers}`
   }
 
-  private trackLeadCreation(lead: Lead) {
+  private trackLeadCreation(lead: any) {
     // Integração com Google Analytics 4
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'lead_generation', {
@@ -123,81 +161,44 @@ class LeadsService {
     }
 
     // Log estruturado para análise
-    console.log('📊 Novo Lead Capturado:', {
-      timestamp: new Date().toISOString(),
-      leadId: lead.id,
-      score: lead.score,
-      profile: {
-        tempo_milhas: lead.tempo_milhas,
-        quantidade_clientes: lead.quantidade_clientes,
-        objetivo: lead.objetivo_profissional,
-        urgencia: lead.inicio_evolucao
-      },
-      utm: {
-        source: lead.utm_source,
-        medium: lead.utm_medium,
-        campaign: lead.utm_campaign
-      }
-    })
-  }
-
-  // Método para analytics de abandono de formulário
-  async trackFormAbandonment(fieldName: string, formData: Partial<CreateLeadData>) {
-    try {
-      // Opcional: salvar dados parciais para remarketing
-      if (formData.email && this.isValidEmail(formData.email)) {
-        const partialLead = {
-          email: formData.email.toLowerCase().trim(),
-          nome_completo: formData.nomeCompleto || '',
-          status: 'abandonou_formulario',
-          tags: ['formulario_incompleto'],
-          ...getUTMParams()
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📊 Novo Lead Capturado:', {
+        timestamp: new Date().toISOString(),
+        leadId: lead.id,
+        score: lead.score,
+        profile: {
+          tempo_milhas: lead.tempo_milhas,
+          quantidade_clientes: lead.quantidade_clientes,
+          objetivo: lead.objetivo_profissional,
+          urgencia: lead.inicio_evolucao
+        },
+        utm: {
+          source: lead.utm_source,
+          medium: lead.utm_medium,
+          campaign: lead.utm_campaign
         }
-
-        await supabase
-          .from('leads')
-          .upsert([partialLead], { onConflict: 'email' })
-      }
-
-      // Track no analytics
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'form_abandonment', {
-          'event_category': 'engagement',
-          'event_label': fieldName,
-          'form_completion': this.calculateFormCompletion(formData)
-        })
-      }
-    } catch (error) {
-      console.error('Erro ao rastrear abandono:', error)
+      })
     }
   }
 
-  private isValidEmail(email: string): boolean {
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
-    return emailRegex.test(email)
-  }
-
-  private calculateFormCompletion(data: Partial<CreateLeadData>): number {
-    const fields = [
-      'nomeCompleto', 'email', 'whatsapp', 'tempoMilhas', 
-      'quantidadeClientes', 'objetivoProfissional', 'desafioAtual', 'inicioEvolucao'
-    ]
-    const filledFields = fields.filter(field => data[field as keyof CreateLeadData])
-    return Math.round((filledFields.length / fields.length) * 100)
-  }
-
-  // Método para obter estatísticas de leads (para dashboard interno)
-  async getLeadsStats() {
+  // Método para teste de conectividade
+  async testConnection(): Promise<{ success: boolean; error?: string }> {
     try {
       const { data, error } = await supabase
-        .from('leads_summary')
-        .select('*')
+        .from('leads')
+        .select('count(*)', { count: 'exact' })
+        .limit(0)
 
-      if (error) throw error
-      return { success: true, data }
+      if (error) {
+        console.error('🔍 DEBUG: Erro de conectividade:', error)
+        return { success: false, error: error.message }
+      }
+
+      console.log('🔍 DEBUG: Conectividade OK, total de leads:', data)
+      return { success: true }
     } catch (error) {
-      console.error('Erro ao buscar estatísticas:', error)
-      return { success: false, error: 'Erro ao carregar estatísticas' }
+      console.error('🔍 DEBUG: Erro de conexão:', error)
+      return { success: false, error: 'Erro de conexão' }
     }
   }
 }

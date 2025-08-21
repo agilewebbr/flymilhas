@@ -353,7 +353,7 @@ export async function DELETE(
             new_balance: newBalance
           },
           client: {
-            name: transaction.accounts[0].clients.name
+            name: transaction.accounts[0].clients[0].name
           }
         }
       },

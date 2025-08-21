@@ -160,3 +160,38 @@
     opacity: 0;
   }
 }
+
+/* Mobile Optimizations */
+@layer components {
+  /* Touch manipulation for better mobile performance */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  /* Prevent zoom on iOS inputs */
+  @media screen and (max-width: 767px) {
+    input[type="text"],
+    input[type="email"], 
+    input[type="tel"],
+    select,
+    textarea {
+      font-size: 16px !important;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+  }
+  
+  /* Safe area for iPhones */
+  @supports (padding: max(0px)) {
+    .safe-area-bottom {
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+  }
+  
+  /* Touch feedback */
+  .touch-feedback:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}

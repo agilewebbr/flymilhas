@@ -1,0 +1,9 @@
+| schemaname | tablename      | rls_enabled |
+| ---------- | -------------- | ----------- |
+| public     | accounts       | true        |
+| public     | clients        | true        |
+| public     | leads          | false       |
+| public     | profiles       | true        |
+| public     | subscriptions  | true        |
+| public     | system_metrics | true        |
+| public     | transactions   | true        |

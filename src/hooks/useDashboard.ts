@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 
 interface DashboardStats {
+  // Dados de clientes existentes (manter)
   totalClients: number
   newClientsThisMonth: number
   growthPercentage: number
@@ -13,6 +14,29 @@ interface DashboardStats {
     email: string
     created_at: string
   }>
+  
+  // NOVOS: Dados de contas de milhas
+  accountsData: {
+    totalAccounts: number
+    totalBalance: number
+    accountsByProgram: Array<{
+      program_name: string
+      account_count: number
+      total_balance: number
+    }>
+    recentTransactions: Array<{
+      id: string
+      type: 'acumulo' | 'resgate'
+      points: number
+      date: string
+      client_name: string
+      program_name: string
+    }>
+    balanceEvolution: Array<{
+      date: string
+      total_balance: number
+    }>
+  }
 }
 
 export const useDashboard = () => {
@@ -24,12 +48,11 @@ export const useDashboard = () => {
     try {
       setLoading(true)
       
-      // 1. Total de clientes
+      // 1. DADOS EXISTENTES DE CLIENTES (manter igual)
       const { count: totalClients } = await supabase
         .from('clients')
         .select('*', { count: 'exact', head: true })
 
-      // 2. Clientes deste mês
       const startOfMonth = new Date()
       startOfMonth.setDate(1)
       startOfMonth.setHours(0, 0, 0, 0)
@@ -39,7 +62,6 @@ export const useDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .gte('created_at', startOfMonth.toISOString())
 
-      // 3. Clientes do mês anterior (para calcular crescimento)
       const lastMonth = new Date()
       lastMonth.setMonth(lastMonth.getMonth() - 1)
       
@@ -49,7 +71,6 @@ export const useDashboard = () => {
         .gte('created_at', lastMonth.toISOString())
         .lt('created_at', startOfMonth.toISOString())
 
-      // 4. Dados para gráfico (últimos 6 meses)
       const sixMonthsAgo = new Date()
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
 
@@ -59,14 +80,90 @@ export const useDashboard = () => {
         .gte('created_at', sixMonthsAgo.toISOString())
         .order('created_at', { ascending: true })
 
-      // 5. Últimos 5 clientes
       const { data: recentClients } = await supabase
         .from('clients')
         .select('id, name, email, created_at')
         .order('created_at', { ascending: false })
         .limit(5)
 
-      // Processar dados do gráfico
+      // 2. NOVOS DADOS DE CONTAS DE MILHAS
+      
+      // Total de contas
+      const { count: totalAccounts } = await supabase
+        .from('accounts')
+        .select('*', { count: 'exact', head: true })
+
+      // Saldo total
+      const { data: balanceData } = await supabase
+        .from('accounts')
+        .select('current_balance')
+
+      const totalBalance = balanceData?.reduce((sum, account) => sum + account.current_balance, 0) || 0
+
+      // Contas por programa
+      const { data: programData } = await supabase
+        .from('accounts')
+        .select('program_name, current_balance')
+
+      const accountsByProgram = programData?.reduce((acc, account) => {
+        const existing = acc.find(item => item.program_name === account.program_name)
+        if (existing) {
+          existing.account_count += 1
+          existing.total_balance += account.current_balance
+        } else {
+          acc.push({
+            program_name: account.program_name,
+            account_count: 1,
+            total_balance: account.current_balance
+          })
+        }
+        return acc
+      }, [] as Array<{ program_name: string; account_count: number; total_balance: number }>) || []
+
+      // Transações recentes (últimas 10)
+      const { data: recentTransactionsData } = await supabase
+        .from('transactions')
+        .select(`
+          id,
+          type,
+          points,
+          date,
+          accounts!inner(
+            program_name,
+            clients!inner(name)
+          )
+        `)
+        .order('created_at', { ascending: false })
+        .limit(10)
+
+      const recentTransactions = recentTransactionsData?.map(t => ({
+        id: t.id,
+        type: t.type as 'acumulo' | 'resgate',
+        points: t.points,
+        date: t.date,
+        client_name: t.accounts.clients[0]?.name || 'Cliente',
+        program_name: t.accounts.program_name
+      })) || []
+
+      // Evolução de saldo (últimos 30 dias - simplificado)
+      const thirtyDaysAgo = new Date()
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+      const { data: evolutionData } = await supabase
+        .from('transactions')
+        .select('date, type, points')
+        .gte('date', thirtyDaysAgo.toISOString().split('T')[0])
+        .order('date', { ascending: true })
+
+      // Calcular evolução simplificada (saldo atual como ponto final)
+      const balanceEvolution = [
+        {
+          date: new Date().toISOString().split('T')[0],
+          total_balance: totalBalance
+        }
+      ]
+
+      // Processar dados do gráfico de clientes (manter igual)
       let clientsPerMonth: Array<{ month: string; count: number }> = []
       
       if (monthlyData && monthlyData.length > 0) {
@@ -85,17 +182,27 @@ export const useDashboard = () => {
         }))
       }
 
-      // Calcular crescimento
+      // Calcular crescimento (manter igual)
       const growthPercentage = lastMonthClients && lastMonthClients > 0 
         ? ((newClientsThisMonth || 0) - lastMonthClients) / lastMonthClients * 100 
         : 0
 
       setStats({
+        // Dados existentes
         totalClients: totalClients || 0,
         newClientsThisMonth: newClientsThisMonth || 0,
         growthPercentage,
         clientsPerMonth,
-        recentClients: recentClients || []
+        recentClients: recentClients || [],
+        
+        // NOVOS dados de contas
+        accountsData: {
+          totalAccounts: totalAccounts || 0,
+          totalBalance,
+          accountsByProgram,
+          recentTransactions,
+          balanceEvolution
+        }
       })
     } catch (err) {
       console.error('Erro ao carregar dashboard:', err)

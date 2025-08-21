@@ -1,0 +1,9 @@
+| table_name     | row_count |
+| -------------- | --------- |
+| accounts       | 0         |
+| clients        | 0         |
+| leads          | 1         |
+| profiles       | 1         |
+| subscriptions  | 0         |
+| system_metrics | 0         |
+| transactions   | 0         |

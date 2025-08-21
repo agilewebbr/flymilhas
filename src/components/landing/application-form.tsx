@@ -328,7 +328,7 @@ export function ApplicationForm() {
             className="lg:col-span-2"
           >
             <Card>
-              <CardContent className="p-8">
+              <CardContent className="p-6 md:p-8">
                 <div className="mb-8">
                   <h3 className="text-2xl font-bold text-foreground mb-4">
                     Formulário de Candidatura
@@ -357,7 +357,7 @@ export function ApplicationForm() {
                   </div>
 
                   {/* Email e WhatsApp */}
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
                         Email profissional *
@@ -366,7 +366,7 @@ export function ApplicationForm() {
                         {...register('email')}
                         type="email"
                         onFocus={handleFormStart}
-                        className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all touch-manipulation"
                         placeholder="seu@email.com"
                       />
                       {errors.email && (
@@ -382,7 +382,7 @@ export function ApplicationForm() {
                         {...register('whatsapp')}
                         type="tel"
                         onFocus={handleFormStart}
-                        className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all touch-manipulation"
                         placeholder="(11) 99999-9999"
                       />
                       {errors.whatsapp && (
@@ -419,7 +419,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('quantidadeClientes')}
-                      className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
                     >
                       <option value="">Selecione uma opção</option>
                       {quantidadeClientesOptions.map(option => (
@@ -440,7 +440,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('objetivoProfissional')}
-                      className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
                     >
                       <option value="">Selecione uma opção</option>
                       {objetivoProfissionalOptions.map(option => (
@@ -461,7 +461,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('desafioAtual')}
-                      className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
                     >
                       <option value="">Selecione uma opção</option>
                       {desafioAtualOptions.map(option => (
@@ -482,7 +482,7 @@ export function ApplicationForm() {
                     </label>
                     <select
                       {...register('inicioEvolucao')}
-                      className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      className="w-full h-13 px-4 text-base border-2 border-input rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all appearance-none touch-manipulation"
                     >
                       <option value="">Selecione uma opção</option>
                       {inicioEvolucaoOptions.map(option => (
@@ -515,7 +515,7 @@ export function ApplicationForm() {
                       type="submit"
                       disabled={isSubmitting}
                       size="lg"
-                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold"
+                      className="w-full h-14 bg-primary text-primary-foreground hover:bg-primary/90 px-8 text-lg font-semibold rounded-xl touch-manipulation"
                     >
                       {isSubmitting ? (
                         <>

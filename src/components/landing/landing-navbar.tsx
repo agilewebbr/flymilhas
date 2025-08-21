@@ -100,49 +100,50 @@ export function LandingNavbar() {
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <>
-          {/* Overlay para fechar ao clicar fora */}
-          <div 
-            className="fixed inset-0 z-[105] bg-black/20 md:hidden"
-            onClick={() => setIsMobileMenuOpen(false)}
-          ></div>
+            {/* Overlay para fechar ao clicar fora */}
+            <div 
+              className="fixed inset-0 z-[105] bg-black/20 md:hidden"
+              onClick={() => setIsMobileMenuOpen(false)}
+            ></div>
 
-          <div className="md:hidden fixed top-16 left-0 right-0 z-[110] bg-background border-t border-border shadow-lg touch-manipulation">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-background border-t border-border">
-              <button
-                onClick={() => scrollToSection('produto')}
-                className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
-              >
-                Produto
-              </button>
-              <button
-                onClick={() => scrollToSection('evolucao')}
-                className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
-              >
-                Evolução
-              </button>
-              <button
-                onClick={() => scrollToSection('candidatura')}
-                className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
-              >
-                Candidatura
-              </button>
-              
-              <div className="pt-4 pb-2 space-y-2">
-                <Link href="/dashboard/gestor" className="block">
-                  <Button variant="ghost" size="sm" className="w-full">
-                    Entrar
-                  </Button>
-                </Link>
-                <Button 
-                  onClick={() => scrollToSection('candidatura')}
-                  size="sm"
-                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            <div className="md:hidden fixed top-16 left-0 right-0 z-[110] bg-background border-t border-border shadow-lg touch-manipulation">
+              <div className="px-2 pt-2 pb-3 space-y-1 bg-background border-t border-border">
+                <button
+                  onClick={() => scrollToSection('produto')}
+                  className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
                 >
-                  Candidatar-se
-                </Button>
+                  Produto
+                </button>
+                <button
+                  onClick={() => scrollToSection('evolucao')}
+                  className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
+                >
+                  Evolução
+                </button>
+                <button
+                  onClick={() => scrollToSection('candidatura')}
+                  className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
+                >
+                  Candidatura
+                </button>
+                
+                <div className="pt-4 pb-2 space-y-2">
+                  <Link href="/dashboard/gestor" className="block">
+                    <Button variant="ghost" size="sm" className="w-full">
+                      Entrar
+                    </Button>
+                  </Link>
+                  <Button 
+                    onClick={() => scrollToSection('candidatura')}
+                    size="sm"
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                  >
+                    Candidatar-se
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </nav>

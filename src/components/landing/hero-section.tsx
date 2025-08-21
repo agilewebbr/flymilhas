@@ -51,7 +51,7 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
+              className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 md:mb-6"
             >
               <span className="text-foreground">Pronto Para Ser</span>
               <br />
@@ -65,7 +65,7 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl"
+              className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8 leading-relaxed max-w-2xl"
             >
               Evolua para o próximo nível profissional. Torne-se o gestor respeitado que você sempre quis ser com processos padronizados, relatórios impressionantes e escalabilidade ilimitada.
             </motion.p>
@@ -96,7 +96,7 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+              className="flex flex-col gap-3 md:flex-row md:gap-4 justify-center lg:justify-start"
             >
               <Button
                 onClick={() => {
@@ -104,7 +104,7 @@ export function HeroSection() {
                   scrollToForm()
                 }}
                 size="lg"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 w-full md:w-auto px-8 py-4 md:py-6 text-base md:text-lg font-semibold rounded-xl touch-manipulation"
               >
                 Quero Me Tornar Um Profissional
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -117,7 +117,7 @@ export function HeroSection() {
                 }}
                 variant="outline"
                 size="lg"
-                className="px-8 py-6 text-lg"
+                className="w-full md:w-auto px-8 py-3 md:py-6 text-base md:text-lg rounded-xl touch-manipulation"
               >
                 Ver Evolução
               </Button>

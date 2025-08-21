@@ -141,8 +141,9 @@ export const useDashboard = () => {
         type: t.type as 'acumulo' | 'resgate',
         points: t.points,
         date: t.date,
-        client_name: t.accounts.clients[0]?.name || 'Cliente',
-        program_name: t.accounts.program_name
+        // CORREÇÃO DA LINHA 144: remover [0] pois não é array
+        client_name: (t.accounts as any).clients?.name || 'Cliente',
+        program_name: (t.accounts as any).program_name
       })) || []
 
       // Evolução de saldo (últimos 30 dias - simplificado)
@@ -205,7 +206,6 @@ export const useDashboard = () => {
         }
       })
     } catch (err) {
-      console.error('Erro ao carregar dashboard:', err)
       setError(err instanceof Error ? err.message : 'Erro ao carregar dashboard')
     } finally {
       setLoading(false)

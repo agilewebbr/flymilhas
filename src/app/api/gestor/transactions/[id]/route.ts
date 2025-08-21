@@ -152,7 +152,7 @@ export async function PUT(
       const newPoints = validatedData.points || currentTransaction.points
       
       // Calcular saldo simulado após reverter transação atual
-      let simulatedBalance = currentTransaction.accounts.current_balance
+      let simulatedBalance = currentTransaction.accounts[0].current_balance
       
       // Reverter transação atual
       if (currentTransaction.type === 'acumulo') {
@@ -172,7 +172,7 @@ export async function PUT(
       if (simulatedBalance < 0) {
         return NextResponse.json({
           data: null,
-          error: `Operação resultaria em saldo negativo. Saldo atual: ${currentTransaction.accounts.current_balance}, Saldo após operação: ${simulatedBalance}`
+          error: `Operação resultaria em saldo negativo. Saldo atual: ${currentTransaction.accounts[0].current_balance}, Saldo após operação: ${simulatedBalance}`
         }, { status: 409 })
       }
     }
@@ -229,7 +229,7 @@ export async function PUT(
             type: updatedTransaction.type,
             points: updatedTransaction.points
           },
-          balance_change: (updatedAccount?.current_balance || 0) - currentTransaction.accounts.current_balance
+          balance_change: (updatedAccount?.current_balance || 0) - currentTransaction.accounts[0].current_balance
         }
       },
       error: null
@@ -312,7 +312,7 @@ export async function DELETE(
     }
 
     // Verificar se remoção deixaria saldo negativo
-    let newBalance = transaction.accounts.current_balance
+    let newBalance = transaction.accounts[0].current_balance
     if (transaction.type === 'acumulo') {
       newBalance -= transaction.points
     } else {
@@ -349,11 +349,11 @@ export async function DELETE(
           points: transaction.points,
           date: transaction.date,
           account: {
-            program_name: transaction.accounts.program_name,
+            program_name: transaction.accounts[0].program_name,
             new_balance: newBalance
           },
           client: {
-            name: transaction.accounts.clients.name
+            name: transaction.accounts[0].clients.name
           }
         }
       },

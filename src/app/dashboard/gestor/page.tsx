@@ -2,18 +2,23 @@
 
 import { useDashboardData } from '@/hooks/useDashboardData'
 
-// Import seguro do AppLayout
+// Import seguro do AppLayout com fallback nomeado
 let AppLayout: any
+
 try {
   const appLayoutModule = require('@/components/app-layout')
   AppLayout = appLayoutModule.AppLayout
 } catch (e) {
-  // Fallback caso AppLayout não exista
-  AppLayout = ({ children }: { children: React.ReactNode }) => (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto py-8">{children}</div>
-    </div>
-  )
+  // Fallback com displayName próprio
+  function AppLayoutFallback({ children }: { children: React.ReactNode }) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto py-8">{children}</div>
+      </div>
+    )
+  }
+  AppLayoutFallback.displayName = 'AppLayoutFallback'
+  AppLayout = AppLayoutFallback
 }
 
 function LoadingSpinner() {
@@ -47,7 +52,6 @@ function ErrorDisplay({ error }: { error: string }) {
 }
 
 export default function GestorDashboard() {
-  // Usar apenas o hook que sabemos que existe
   const { 
     metrics, 
     companyDistribution, 

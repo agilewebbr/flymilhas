@@ -46,12 +46,15 @@ export function LandingNavbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
+            {/*
             <button
               onClick={() => scrollToSection('produto')}
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
               Produto
             </button>
+            */}
+
             <button
               onClick={() => scrollToSection('evolucao')}
               className="text-muted-foreground hover:text-foreground transition-colors"

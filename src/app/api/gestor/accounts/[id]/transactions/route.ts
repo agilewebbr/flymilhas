@@ -114,8 +114,8 @@ export async function GET(
           program_name: account.program_name,
           current_balance: account.current_balance,
           client: {
-            id: account.clients.id,
-            name: account.clients.name
+            id: account.clients[0].id,
+            name: account.clients[0].name
           }
         },
         transactions: transactions || [],

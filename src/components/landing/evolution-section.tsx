@@ -108,7 +108,7 @@ export function EvolutionSection() {
         </div>
 
         {/* Evolutions Grid */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 mb-12 md:mb-16">
           {evolutions.map((evolution, index) => (
             <motion.div
               key={index}
@@ -117,47 +117,47 @@ export function EvolutionSection() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <evolution.icon className="h-6 w-6 text-primary" />
+              <Card className="h-full hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary overflow-hidden">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex items-start gap-3 md:gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <evolution.icon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                     </div>
                     
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
-                          <h3 className="font-bold text-foreground mb-2 text-lg leading-tight">
+                          <h3 className="font-bold text-foreground mb-2 text-base md:text-lg leading-tight break-words">
                             {evolution.title}
                           </h3>
-                          <p className="text-muted-foreground leading-relaxed">
+                          <p className="text-sm md:text-base text-muted-foreground leading-relaxed break-words">
                             {evolution.description}
                           </p>
                         </div>
                         
-                        <div className="ml-4 flex flex-col items-end gap-2">
+                        <div className="ml-2 md:ml-4 flex flex-col items-end gap-1 md:gap-2 flex-shrink-0">
                           <Badge 
                             variant="secondary" 
-                            className={`${evolution.statusColor} text-white text-xs`}
+                            className={`${evolution.statusColor} text-white text-xs px-2 py-1 whitespace-nowrap`}
                           >
                             {evolution.status}
                           </Badge>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
                             {evolution.sprint}
                           </span>
                         </div>
                       </div>
                       
                       {/* Progress indicator */}
-                      <div className="mt-4">
+                      <div className="mt-3 md:mt-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-muted-foreground">Progresso</span>
-                          <span className="text-sm font-medium text-primary">
+                          <span className="text-xs md:text-sm text-muted-foreground">Progresso</span>
+                          <span className="text-xs md:text-sm font-medium text-primary">
                             {evolution.status === 'Pronto' ? '100%' : 
                              evolution.status === 'Em desenvolvimento' ? '60%' : '20%'}
                           </span>
                         </div>
-                        <div className="w-full bg-muted rounded-full h-2">
+                        <div className="w-full bg-muted rounded-full h-1.5 md:h-2">
                           <div 
                             className="bg-primary h-2 rounded-full transition-all duration-500" 
                             style={{ 

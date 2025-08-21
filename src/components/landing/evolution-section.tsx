@@ -202,7 +202,7 @@ export function EvolutionSection() {
                   scrollToDemo()
                 }}
                 size="lg"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg font-semibold"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 md:px-8 py-4 md:py-6 text-base md:text-lg font-semibold rounded-xl touch-manipulation"
               >
                 Ver Minha Evolução
                 <ArrowRight className="ml-2 h-5 w-5" />

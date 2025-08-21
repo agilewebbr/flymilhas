@@ -298,7 +298,7 @@ export function ApplicationForm() {
 
   return (
     <section id="candidatura" className="py-16 lg:py-24 bg-muted/30">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
+      <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 overflow-x-hidden">
         <div className="text-center mb-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -515,7 +515,7 @@ export function ApplicationForm() {
                       type="submit"
                       disabled={isSubmitting}
                       size="lg"
-                      className="w-full h-14 bg-primary text-primary-foreground hover:bg-primary/90 px-8 text-lg font-semibold rounded-xl touch-manipulation"
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 md:px-8 py-4 md:py-6 text-base md:text-lg font-semibold rounded-xl touch-manipulation"
                     >
                       {isSubmitting ? (
                         <>
@@ -524,7 +524,7 @@ export function ApplicationForm() {
                         </>
                       ) : (
                         <>
-                          Quero Evoluir Para Profissional de Elite
+                          Evoluir para Profissional de Elite
                           <ArrowRight className="ml-2 h-5 w-5" />
                         </>
                       )}
@@ -559,7 +559,7 @@ export function ApplicationForm() {
                         <h4 className="font-semibold text-foreground text-sm">
                           {beneficio.title}
                         </h4>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-muted-foreground break-words leading-relaxed">
                           {beneficio.description}
                         </p>
                       </div>

@@ -67,13 +67,13 @@ export async function GET(
       data: {
         transaction,
         account: {
-          id: transaction.accounts.id,
-          program_name: transaction.accounts.program_name,
-          current_balance: transaction.accounts.current_balance
+          id: transaction.accounts[0].id,
+          program_name: transaction.accounts[0].program_name,
+          current_balance: transaction.accounts[0].current_balance
         },
         client: {
-          id: transaction.accounts.clients.id,
-          name: transaction.accounts.clients.name
+          id: transaction.accounts[0].clients[0].id,
+          name: transaction.accounts[0].clients[0].name
         }
       },
       error: null

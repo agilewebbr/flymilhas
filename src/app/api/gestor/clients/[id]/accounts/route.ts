@@ -49,7 +49,8 @@ export async function GET(
         current_balance,
         currency,
         created_at,
-        updated_at
+        updated_at,
+        transactions!inner(count)
       `, { count: 'exact' })
       .eq('client_id', clientId)
 

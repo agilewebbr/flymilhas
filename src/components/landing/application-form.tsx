@@ -248,7 +248,7 @@ export function ApplicationForm() {
 
   if (isSubmitted) {
     return (
-      <section id="candidatura" className="py-12 lg:py-16 xl:py-24 bg-muted/30 overflow-x-hidden">
+      <section id="candidatura" className="py-12 lg:py-16 xl:py-24 bg-muted/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -298,7 +298,7 @@ export function ApplicationForm() {
 
   return (
     <section id="candidatura" className="py-16 lg:py-24 bg-muted/30">
-      <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 overflow-x-hidden">
+      <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="text-center mb-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

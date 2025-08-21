@@ -67,7 +67,7 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#ff4500" />
         
         {/* Preload critical resources */}
-        <link rel="preload" as="image" href="/hero-image.jpg" />
+        <link rel="preload" as="image" href="/hero-image.jpg" onError={(e) => e.currentTarget.style.display = 'none'} />
         
         {/* Additional meta tags for better SEO */}
         <meta name="format-detection" content="telephone=no" />

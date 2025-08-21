@@ -106,37 +106,36 @@ export function LandingNavbar() {
               onClick={() => setIsMobileMenuOpen(false)}
             ></div>
 
-            <div className="md:hidden fixed top-16 left-0 right-0 z-[110] bg-background border-t border-border shadow-lg touch-manipulation">
-              <div className="px-2 pt-2 pb-3 space-y-1 bg-background border-t border-border">
+            <div className="md:hidden fixed top-16 left-0 right-0 z-[110] bg-background border-t border-border shadow-xl">
+              <div className="px-4 py-6 space-y-3 bg-background border-t border-border">
                 <button
                   onClick={() => scrollToSection('produto')}
-                  className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
+                  className="block px-6 py-4 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-lg min-h-[48px] flex items-center"
                 >
                   Produto
                 </button>
                 <button
                   onClick={() => scrollToSection('evolucao')}
-                  className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
+                  className="block px-6 py-4 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-lg min-h-[48px] flex items-center"
                 >
                   Evolução
                 </button>
                 <button
                   onClick={() => scrollToSection('candidatura')}
-                  className="block px-4 py-4 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-md"
+                  className="block px-6 py-4 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors w-full text-left touch-manipulation rounded-lg min-h-[48px] flex items-center"
                 >
                   Candidatura
                 </button>
                 
-                <div className="pt-4 pb-2 space-y-2">
+                <div className="pt-6 pb-2 space-y-3 border-t border-border">
                   <Link href="/dashboard/gestor" className="block">
-                    <Button variant="ghost" size="sm" className="w-full">
+                    <Button variant="ghost" className="w-full h-12 text-base font-medium">
                       Entrar
                     </Button>
                   </Link>
                   <Button 
                     onClick={() => scrollToSection('candidatura')}
-                    size="sm"
-                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                    className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 text-base font-semibold"
                   >
                     Candidatar-se
                   </Button>

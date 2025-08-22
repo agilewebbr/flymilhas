@@ -40,8 +40,6 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   })
 
   const fetchClients = async () => {
-    console.log('🔍 fetchClients chamado:', { user: !!user, authLoading })
-    
     if (!user || authLoading) {
       console.log('🔍 fetchClients: Saindo cedo - user:', !!user, 'authLoading:', authLoading)
       return
@@ -58,7 +56,9 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
         if (value) params.append(key, value)
       })
 
-      const response = await fetch(`/api/clients?${params}`)
+      const response = await fetch(`/api/clients?${params}`, {
+        credentials: 'include'
+      })
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
@@ -93,6 +93,7 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'include',
       body: JSON.stringify(data)
     })
 
@@ -113,6 +114,7 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'include',
       body: JSON.stringify(data)
     })
 
@@ -129,7 +131,8 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
     if (!user) throw new Error('Não autenticado')
 
     const response = await fetch(`/api/clients/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      credentials: 'include'
     })
 
     if (!response.ok) {

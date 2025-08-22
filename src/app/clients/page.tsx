@@ -1,4 +1,4 @@
-// src/app/clients/page.tsx - Substituir todo o conteúdo
+// src/app/clients/page.tsx
 'use client'
 
 import { useState } from 'react'
@@ -26,6 +26,8 @@ try {
 }
 
 export default function ClientsPage() {
+  console.log('🔍 ClientsPage: Componente renderizado')
+  
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const {
@@ -38,6 +40,12 @@ export default function ClientsPage() {
     setQuery,
     refreshClients
   } = useClients()
+
+  console.log('🔍 ClientsPage: useClients retornou:', { 
+    clientsLength: clients?.length, 
+    loading, 
+    error 
+  })
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()

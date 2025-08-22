@@ -13,6 +13,7 @@ import { CreateAccountInput, UpdateAccountInput } from '@/lib/validations/accoun
 import { Plus, CreditCard, History, Settings, AlertCircle, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import TransactionHistory from '@/components/transactions/TransactionHistory'
 
 interface ClientDetailsProps {
   client: Client
@@ -58,9 +59,13 @@ export default function ClientDetails({ client }: ClientDetailsProps) {
     }
   }
 
+  const [selectedAccountForTransactions, setSelectedAccountForTransactions] = useState<Account | null>(null)
+
   const handleViewTransactions = (accountId: string) => {
-    // TODO: Implementar na próxima task
-    console.log('Ver transações da conta:', accountId)
+    const account = accountsData?.accounts.find(acc => acc.id === accountId)
+    if (account) {
+      setSelectedAccountForTransactions(account)
+    }
   }
 
   return (
@@ -155,28 +160,51 @@ export default function ClientDetails({ client }: ClientDetailsProps) {
         )}
       </div>
 
-      {/* Seção de Histórico (Placeholder para Sprint 3) */}
+      {/* Seção de Histórico de Transações - IMPLEMENTAÇÃO REAL */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-xl font-semibold text-gray-900">Histórico de Transações</h3>
-            <p className="text-gray-600 text-sm mt-1">Acompanhe todas as movimentações de milhas</p>
+            <p className="text-gray-600 text-sm mt-1">
+              {selectedAccountForTransactions 
+                ? `Transações da conta ${selectedAccountForTransactions.program_name}`
+                : 'Selecione uma conta para ver o histórico'
+              }
+            </p>
           </div>
+          {selectedAccountForTransactions && (
+            <Button 
+              variant="outline" 
+              onClick={() => setSelectedAccountForTransactions(null)}
+            >
+              Ver Todas as Contas
+            </Button>
+          )}
         </div>
         
-        <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
-          <div className="h-12 w-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <History className="h-6 w-6 text-gray-400" />
+        {selectedAccountForTransactions ? (
+          <TransactionHistory 
+            accountId={selectedAccountForTransactions.id}
+            accountName={`${selectedAccountForTransactions.program_name} - ${selectedAccountForTransactions.account_number}`}
+            showFilters={true}
+            limit={10}
+          />
+        ) : (
+          <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
+            <div className="h-12 w-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <History className="h-6 w-6 text-gray-400" />
+            </div>
+            <h4 className="text-base font-medium text-gray-900 mb-2">Selecione uma conta</h4>
+            <p className="text-gray-600 text-sm mb-4">
+              Clique em "Ver Transações" em qualquer conta acima para visualizar o histórico detalhado.
+            </p>
+            {accountsData?.accounts.length > 0 && (
+              <p className="text-gray-500 text-sm">
+                {accountsData.accounts.length} conta(s) disponível(eis) para consulta
+              </p>
+            )}
           </div>
-          <h4 className="text-base font-medium text-gray-900 mb-2">Sem histórico disponível</h4>
-          <p className="text-gray-600 text-sm mb-3">
-            O histórico detalhado será implementado no próximo sprint.
-          </p>
-          <div className="inline-flex items-center space-x-2 text-amber-600 font-medium text-sm bg-amber-50 px-3 py-2 rounded-full">
-            <AlertCircle className="h-4 w-4" />
-            <span>Em desenvolvimento</span>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Seção de Configurações Rápidas (Placeholder) */}

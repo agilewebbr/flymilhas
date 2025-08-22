@@ -1,3 +1,4 @@
+// src/app/clients/[id]/page.tsx - Substituir todo o conteúdo
 'use client'
 
 import { useClient } from '@/hooks/useClient'

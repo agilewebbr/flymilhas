@@ -198,9 +198,9 @@ export default function ClientDetails({ client }: ClientDetailsProps) {
             <p className="text-gray-600 text-sm mb-4">
               Clique em "Ver Transações" em qualquer conta acima para visualizar o histórico detalhado.
             </p>
-            {accountsData?.accounts.length > 0 && (
+            {(accountsData?.accounts.length || 0) > 0 && (
               <p className="text-gray-500 text-sm">
-                {accountsData.accounts.length} conta(s) disponível(eis) para consulta
+                {accountsData?.accounts.length} conta(s) disponível(eis) para consulta
               </p>
             )}
           </div>

@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Verificar usuário
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken)
     if (authError || !user) {
       return NextResponse.json(
         { data: null, error: 'Usuário não autorizado' },

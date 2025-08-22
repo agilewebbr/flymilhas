@@ -1,19 +1,18 @@
-// src/app/api/clients/route.ts - Versão simplificada que funciona
+// src/app/api/clients/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 export async function GET(request: NextRequest) {
   try {
-    // Pegar token do cookie ou header
+    // Pegar token do header Authorization ou cookies
     const authHeader = request.headers.get('authorization')
     const cookieHeader = request.headers.get('cookie') || ''
     
-    // Extrair access token do cookie sb-access-token
     let accessToken = ''
     if (authHeader?.startsWith('Bearer ')) {
       accessToken = authHeader.split(' ')[1]
     } else {
-      // Tentar extrair do cookie
+      // Tentar extrair do cookie como fallback
       const tokenMatch = cookieHeader.match(/sb-[^-]+-auth-token=([^;]+)/)
       if (tokenMatch) {
         try {
@@ -38,7 +37,7 @@ export async function GET(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
 
-    // Definir sessão
+    // Definir sessão usando o token
     await supabase.auth.setSession({
       access_token: accessToken,
       refresh_token: '' // Não precisamos para esta operação
@@ -81,6 +80,7 @@ export async function GET(request: NextRequest) {
       .range(offset, offset + limit - 1)
 
     if (fetchError) {
+      console.error('Erro ao buscar clientes:', fetchError)
       return NextResponse.json(
         { data: null, error: 'Erro ao buscar clientes' },
         { status: 500 }
@@ -101,6 +101,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
+    console.error('Erro na API de clientes:', error)
     return NextResponse.json(
       { data: null, error: 'Erro interno do servidor' },
       { status: 500 }
@@ -111,19 +112,21 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Mesma lógica de autenticação
+    const authHeader = request.headers.get('authorization')
     const cookieHeader = request.headers.get('cookie') || ''
-    let accessToken = ''
     
-    const tokenMatch = cookieHeader.match(/sb-[^-]+-auth-token=([^;]+)/)
-    if (tokenMatch) {
-      try {
-        const tokenData = JSON.parse(decodeURIComponent(tokenMatch[1]))
-        accessToken = tokenData.access_token
-      } catch (e) {
-        return NextResponse.json(
-          { data: null, error: 'Token inválido' },
-          { status: 401 }
-        )
+    let accessToken = ''
+    if (authHeader?.startsWith('Bearer ')) {
+      accessToken = authHeader.split(' ')[1]
+    } else {
+      const tokenMatch = cookieHeader.match(/sb-[^-]+-auth-token=([^;]+)/)
+      if (tokenMatch) {
+        try {
+          const tokenData = JSON.parse(decodeURIComponent(tokenMatch[1]))
+          accessToken = tokenData.access_token
+        } catch (e) {
+          // Ignore parsing errors
+        }
       }
     }
 
@@ -174,6 +177,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (insertError) {
+      console.error('Erro ao criar cliente:', insertError)
       return NextResponse.json(
         { data: null, error: 'Erro ao criar cliente' },
         { status: 500 }
@@ -183,6 +187,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ data: newClient, error: null })
 
   } catch (error) {
+    console.error('Erro ao criar cliente:', error)
     return NextResponse.json(
       { data: null, error: 'Erro interno do servidor' },
       { status: 500 }

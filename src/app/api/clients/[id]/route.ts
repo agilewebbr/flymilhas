@@ -1,45 +1,101 @@
 // src/app/api/clients/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClient } from '@supabase/supabase-js'
+
+// Função auxiliar para extrair o access token
+function getAccessToken(request: NextRequest): string | null {
+  const authHeader = request.headers.get('authorization')
+  const cookieHeader = request.headers.get('cookie') || ''
+  
+  let accessToken = ''
+  if (authHeader?.startsWith('Bearer ')) {
+    accessToken = authHeader.split(' ')[1]
+  } else {
+    const tokenMatch = cookieHeader.match(/sb-[^-]+-auth-token=([^;]+)/)
+    if (tokenMatch) {
+      try {
+        const tokenData = JSON.parse(decodeURIComponent(tokenMatch[1]))
+        accessToken = tokenData.access_token
+      } catch (e) {
+        return null
+      }
+    }
+  }
+  
+  return accessToken || null
+}
+
+// Função auxiliar para autenticar usuário
+async function authenticateUser(accessToken: string) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  await supabase.auth.setSession({
+    access_token: accessToken,
+    refresh_token: ''
+  })
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) {
+    return { user: null, supabase: null, error: 'Usuário não autorizado' }
+  }
+
+  return { user, supabase, error: null }
+}
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
-    
-    // Verificar autenticação
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
+    const accessToken = getAccessToken(request)
+    if (!accessToken) {
       return NextResponse.json(
-        { data: null, error: 'Não autorizado' },
+        { data: null, error: 'Token não encontrado' },
         { status: 401 }
       )
     }
 
-    const { data: client, error } = await supabase
+    const { user, supabase, error } = await authenticateUser(accessToken)
+    if (error || !user || !supabase) {
+      return NextResponse.json(
+        { data: null, error: error || 'Erro de autenticação' },
+        { status: 401 }
+      )
+    }
+
+    const { data: client, error: fetchError } = await supabase
       .from('clients')
       .select(`
         *,
         accounts:accounts(
           id,
           program_name,
-          account_number,
           current_balance,
-          currency
+          account_number,
+          status,
+          created_at,
+          updated_at
         )
       `)
       .eq('id', params.id)
       .eq('gestor_id', user.id)
       .single()
 
-    if (error) {
-      console.error('Erro ao buscar cliente:', error)
+    if (fetchError) {
+      if (fetchError.code === 'PGRST116') {
+        return NextResponse.json(
+          { data: null, error: 'Cliente não encontrado' },
+          { status: 404 }
+        )
+      }
+      
+      console.error('Erro ao buscar cliente:', fetchError)
       return NextResponse.json(
-        { data: null, error: 'Cliente não encontrado' },
-        { status: 404 }
+        { data: null, error: 'Erro ao buscar cliente' },
+        { status: 500 }
       )
     }
 
@@ -49,7 +105,7 @@ export async function GET(
     })
 
   } catch (error) {
-    console.error('Erro ao buscar cliente:', error)
+    console.error('Erro na API de cliente:', error)
     return NextResponse.json(
       { data: null, error: 'Erro interno do servidor' },
       { status: 500 }
@@ -62,46 +118,53 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
-    
-    // Verificar autenticação
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
+    const accessToken = getAccessToken(request)
+    if (!accessToken) {
       return NextResponse.json(
-        { data: null, error: 'Não autorizado' },
+        { data: null, error: 'Token não encontrado' },
+        { status: 401 }
+      )
+    }
+
+    const { user, supabase, error } = await authenticateUser(accessToken)
+    if (error || !user || !supabase) {
+      return NextResponse.json(
+        { data: null, error: error || 'Erro de autenticação' },
         { status: 401 }
       )
     }
 
     const body = await request.json()
     
-    // Validação básica
-    if (!body.name || typeof body.name !== 'string' || body.name.trim().length === 0) {
+    if (!body.name?.trim()) {
       return NextResponse.json(
         { data: null, error: 'Nome é obrigatório' },
         { status: 400 }
       )
     }
 
-    // Preparar dados para atualização
-    const updateData = {
-      name: body.name.trim(),
-      email: body.email?.trim() || null,
-      phone: body.phone?.trim() || null,
-      notes: body.notes?.trim() || null,
-      updated_at: new Date().toISOString()
-    }
-
-    // Atualizar cliente
     const { data: updatedClient, error: updateError } = await supabase
       .from('clients')
-      .update(updateData)
+      .update({
+        name: body.name.trim(),
+        email: body.email?.trim() || null,
+        phone: body.phone?.trim() || null,
+        notes: body.notes?.trim() || null,
+        updated_at: new Date().toISOString()
+      })
       .eq('id', params.id)
       .eq('gestor_id', user.id)
       .select('*')
       .single()
 
     if (updateError) {
+      if (updateError.code === 'PGRST116') {
+        return NextResponse.json(
+          { data: null, error: 'Cliente não encontrado' },
+          { status: 404 }
+        )
+      }
+      
       console.error('Erro ao atualizar cliente:', updateError)
       return NextResponse.json(
         { data: null, error: 'Erro ao atualizar cliente' },
@@ -128,40 +191,38 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
-    
-    // Verificar autenticação
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
+    const accessToken = getAccessToken(request)
+    if (!accessToken) {
       return NextResponse.json(
-        { data: null, error: 'Não autorizado' },
+        { data: null, error: 'Token não encontrado' },
         { status: 401 }
       )
     }
 
-    // Verificar se o cliente possui contas (impedir exclusão)
-    const { data: accounts, error: accountsError } = await supabase
-      .from('accounts')
+    const { user, supabase, error } = await authenticateUser(accessToken)
+    if (error || !user || !supabase) {
+      return NextResponse.json(
+        { data: null, error: error || 'Erro de autenticação' },
+        { status: 401 }
+      )
+    }
+
+    // Verificar se o cliente existe e pertence ao usuário
+    const { data: existingClient, error: checkError } = await supabase
+      .from('clients')
       .select('id')
-      .eq('client_id', params.id)
-      .limit(1)
+      .eq('id', params.id)
+      .eq('gestor_id', user.id)
+      .single()
 
-    if (accountsError) {
-      console.error('Erro ao verificar contas:', accountsError)
+    if (checkError || !existingClient) {
       return NextResponse.json(
-        { data: null, error: 'Erro ao verificar contas do cliente' },
-        { status: 500 }
+        { data: null, error: 'Cliente não encontrado' },
+        { status: 404 }
       )
     }
 
-    if (accounts && accounts.length > 0) {
-      return NextResponse.json(
-        { data: null, error: 'Não é possível excluir cliente com contas cadastradas' },
-        { status: 400 }
-      )
-    }
-
-    // Deletar cliente
+    // Deletar o cliente
     const { error: deleteError } = await supabase
       .from('clients')
       .delete()

@@ -21,7 +21,7 @@ interface UseClientsReturn {
 }
 
 export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseClientsReturn {
-  const { user, loading: authLoading } = useAuth()
+  const { user, loading: authLoading, session } = useAuth()
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -40,13 +40,12 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   })
 
   const fetchClients = async () => {
-    if (!user || authLoading) {
-      console.log('🔍 fetchClients: Saindo cedo - user:', !!user, 'authLoading:', authLoading)
+    if (!user || authLoading || !session?.access_token) {
+      console.log('🔍 fetchClients: Saindo cedo - user:', !!user, 'authLoading:', authLoading, 'token:', !!session?.access_token)
       return
     }
-
-    console.log('🔍 fetchClients: Fazendo requisição...')
-
+    
+    console.log('🔍 fetchClients: Fazendo requisição com token...')
     setLoading(true)
     setError(null)
 
@@ -57,7 +56,10 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
       })
 
       const response = await fetch(`/api/clients?${params}`, {
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
       })
 
       if (!response.ok) {
@@ -70,7 +72,7 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
         throw new Error(data.error)
       }
 
-      setClients(data.clients)
+      setClients(data.data.clients)
       setPagination({
         page: data.data.pagination.page,
         limit: data.data.pagination.limit,
@@ -86,12 +88,13 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   }
 
   const createClient = async (data: CreateClientInput) => {
-    if (!user) throw new Error('Não autenticado')
+    if (!user || !session?.access_token) throw new Error('Não autenticado')
 
     const response = await fetch('/api/clients', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
       },
       credentials: 'include',
       body: JSON.stringify(data)
@@ -103,16 +106,17 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
       throw new Error(result.error || 'Erro ao criar cliente')
     }
 
-    await fetchClients() // Refresh da lista
+    await fetchClients()
   }
 
   const updateClient = async (id: string, data: UpdateClientInput) => {
-    if (!user) throw new Error('Não autenticado')
+    if (!user || !session?.access_token) throw new Error('Não autenticado')
 
     const response = await fetch(`/api/clients/${id}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
       },
       credentials: 'include',
       body: JSON.stringify(data)
@@ -124,14 +128,17 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
       throw new Error(result.error || 'Erro ao atualizar cliente')
     }
 
-    await fetchClients() // Refresh da lista
+    await fetchClients()
   }
 
   const deleteClient = async (id: string) => {
-    if (!user) throw new Error('Não autenticado')
+    if (!user || !session?.access_token) throw new Error('Não autenticado')
 
     const response = await fetch(`/api/clients/${id}`, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`
+      },
       credentials: 'include'
     })
 
@@ -140,7 +147,7 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
       throw new Error(result.error || 'Erro ao deletar cliente')
     }
 
-    await fetchClients() // Refresh da lista
+    await fetchClients()
   }
 
   const setQuery = (newQuery: Partial<ClientQueryInput>) => {
@@ -148,10 +155,10 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   }
 
   useEffect(() => {
-    if (!authLoading && user) {
+    if (!authLoading && user && session?.access_token) {
       fetchClients()
     }
-  }, [user, authLoading, query])
+  }, [user, authLoading, session?.access_token, query])
 
   return {
     clients,

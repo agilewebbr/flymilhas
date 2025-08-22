@@ -81,7 +81,7 @@ export async function GET(
         )
       `)
       .eq('id', params.id)
-      .eq('user_id', user.id)
+      .eq('gestor_id', user.id)
       .single()
 
     if (fetchError) {
@@ -153,7 +153,7 @@ export async function PUT(
         updated_at: new Date().toISOString()
       })
       .eq('id', params.id)
-      .eq('user_id', user.id)
+      .eq('gestor_id', user.id)
       .select('*')
       .single()
 
@@ -212,7 +212,7 @@ export async function DELETE(
       .from('clients')
       .select('id')
       .eq('id', params.id)
-      .eq('user_id', user.id)
+      .eq('gestor_id', user.id)
       .single()
 
     if (checkError || !existingClient) {
@@ -227,7 +227,7 @@ export async function DELETE(
       .from('clients')
       .delete()
       .eq('id', params.id)
-      .eq('user_id', user.id)
+      .eq('gestor_id', user.id)
 
     if (deleteError) {
       console.error('Erro ao deletar cliente:', deleteError)

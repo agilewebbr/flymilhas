@@ -51,7 +51,7 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
         if (value) params.append(key, value)
       })
 
-      const response = await fetch(`/api/gestor/clients?${params}`, {
+      const response = await fetch(`/api/clients?${params}`, {
         headers: {
           'Authorization': `Bearer ${session.access_token}`
         }
@@ -64,7 +64,12 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
       }
 
       setClients(data.clients)
-      setPagination(data.pagination)
+      setPagination({
+        page: data.data.pagination.page,
+        limit: data.data.pagination.limit,
+        total: data.data.pagination.totalCount,
+        totalPages: data.data.pagination.totalPages
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido')
     } finally {
@@ -75,11 +80,10 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   const createClient = async (data: CreateClientInput) => {
     if (!session?.access_token) throw new Error('Não autenticado')
 
-    const response = await fetch('/api/gestor/clients', {
+    const response = await fetch('/api/clients', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
     })
@@ -94,13 +98,11 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   }
 
   const updateClient = async (id: string, data: UpdateClientInput) => {
-    if (!session?.access_token) throw new Error('Não autenticado')
-
+    
     const response = await fetch(`/api/gestor/clients/${id}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
     })
@@ -115,9 +117,8 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   }
 
   const deleteClient = async (id: string) => {
-    if (!session?.access_token) throw new Error('Não autenticado')
 
-    const response = await fetch(`/api/gestor/clients/${id}`, {
+    const response = await fetch(`/api/clients/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${session.access_token}`

@@ -21,7 +21,7 @@ interface UseClientsReturn {
 }
 
 export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseClientsReturn {
-  const { session } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -40,7 +40,14 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   })
 
   const fetchClients = async () => {
-    if (!session?.access_token) return
+    console.log('🔍 fetchClients chamado:', { user: !!user, authLoading })
+    
+    if (!user || authLoading) {
+      console.log('🔍 fetchClients: Saindo cedo - user:', !!user, 'authLoading:', authLoading)
+      return
+    }
+
+    console.log('🔍 fetchClients: Fazendo requisição...')
 
     setLoading(true)
     setError(null)
@@ -51,16 +58,16 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
         if (value) params.append(key, value)
       })
 
-      const response = await fetch(`/api/clients?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
-      })
+      const response = await fetch(`/api/clients?${params}`)
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
 
       const data = await response.json()
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao carregar clientes')
+      if (data.error) {
+        throw new Error(data.error)
       }
 
       setClients(data.clients)
@@ -71,6 +78,7 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
         totalPages: data.data.pagination.totalPages
       })
     } catch (err) {
+      console.error('Erro ao buscar clientes:', err)
       setError(err instanceof Error ? err.message : 'Erro desconhecido')
     } finally {
       setLoading(false)
@@ -78,7 +86,7 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   }
 
   const createClient = async (data: CreateClientInput) => {
-    if (!session?.access_token) throw new Error('Não autenticado')
+    if (!user) throw new Error('Não autenticado')
 
     const response = await fetch('/api/clients', {
       method: 'POST',
@@ -98,8 +106,9 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   }
 
   const updateClient = async (id: string, data: UpdateClientInput) => {
-    
-    const response = await fetch(`/api/gestor/clients/${id}`, {
+    if (!user) throw new Error('Não autenticado')
+
+    const response = await fetch(`/api/clients/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -117,6 +126,7 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   }
 
   const deleteClient = async (id: string) => {
+    if (!user) throw new Error('Não autenticado')
 
     const response = await fetch(`/api/clients/${id}`, {
       method: 'DELETE'
@@ -135,10 +145,10 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   }
 
   useEffect(() => {
-    if (session?.access_token) {
+    if (!authLoading && user) {
       fetchClients()
     }
-  }, [session, query])
+  }, [user, authLoading, query])
 
   return {
     clients,

@@ -87,7 +87,7 @@ export function CreateClientModal({ isOpen, onClose, onSubmit }: CreateClientMod
                   {...register('name')}
                   type="text"
                   id="name"
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-brand-500 focus:border-brand-500"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Nome do cliente"
                 />
                 {errors.name && (
@@ -104,7 +104,7 @@ export function CreateClientModal({ isOpen, onClose, onSubmit }: CreateClientMod
                   {...register('email')}
                   type="email"
                   id="email"
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-brand-500 focus:border-brand-500"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="email@exemplo.com"
                 />
                 {errors.email && (
@@ -121,7 +121,7 @@ export function CreateClientModal({ isOpen, onClose, onSubmit }: CreateClientMod
                   {...register('phone')}
                   type="tel"
                   id="phone"
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-brand-500 focus:border-brand-500"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="(11) 99999-9999"
                 />
                 {errors.phone && (
@@ -138,7 +138,7 @@ export function CreateClientModal({ isOpen, onClose, onSubmit }: CreateClientMod
                   {...register('notes')}
                   id="notes"
                   rows={3}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-brand-500 focus:border-brand-500"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Informações adicionais sobre o cliente..."
                 />
                 {errors.notes && (
@@ -167,7 +167,7 @@ export function CreateClientModal({ isOpen, onClose, onSubmit }: CreateClientMod
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 bg-brand-600 border border-transparent rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 flex items-center justify-center"
+                className="flex-1 bg-blue-600 border border-transparent rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
               >
                 {isSubmitting ? (
                   <>

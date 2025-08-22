@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
           current_balance
         )
       `, { count: 'exact' })
-      .eq('gestor_id', user.id)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
 
     if (search) {
@@ -167,7 +167,7 @@ export async function POST(request: NextRequest) {
     const { data: newClient, error: insertError } = await supabase
       .from('clients')
       .insert({
-        gestor_id: user.id,
+        user_id: user.id,
         name: body.name.trim(),
         email: body.email?.trim() || null,
         phone: body.phone?.trim() || null,

@@ -119,10 +119,7 @@ export function useClients(initialQuery: Partial<ClientQueryInput> = {}): UseCli
   const deleteClient = async (id: string) => {
 
     const response = await fetch(`/api/clients/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${session.access_token}`
-      }
+      method: 'DELETE'
     })
 
     if (!response.ok) {

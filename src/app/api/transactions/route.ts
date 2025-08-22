@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
     // Verificar se a conta pertence ao usuário (via RLS isso já é garantido, mas vamos verificar explicitamente)
     const { data: account, error: accountError } = await supabase
       .from('accounts')
-      .select('id, current_balance, client:clients(gestor_id)')
+      .select('id, current_balance, client:clients!inner(gestor_id)')
       .eq('id', validatedData.account_id)
       .single()
 
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se o usuário é o gestor da conta
-    if (account.client?.gestor_id !== user.id) {
+    if ((account.client as any)?.gestor_id !== user.id) {
       return NextResponse.json(
         { data: null, error: 'Você não tem permissão para esta conta' },
         { status: 403 }

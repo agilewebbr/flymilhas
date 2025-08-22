@@ -90,7 +90,7 @@ export async function PUT(
         account:accounts(
           id,
           current_balance,
-          client:clients(gestor_id)
+          client:clients!inner(gestor_id)
         )
       `)
       .eq('id', params.id)
@@ -104,7 +104,7 @@ export async function PUT(
     }
 
     // Verificar permissão
-    if (currentTransaction.account?.client?.gestor_id !== user.id) {
+    if ((currentTransaction.account?.client as any)?.gestor_id !== user.id) {
       return NextResponse.json(
         { data: null, error: 'Você não tem permissão para esta transação' },
         { status: 403 }

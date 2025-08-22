@@ -1,15 +1,23 @@
-// src/app/api/clients/route.ts - Substitua todo o conteúdo
+// src/app/api/clients/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 
 export async function GET(request: NextRequest) {
+  console.log('🔍 API /clients GET chamada')
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const cookieStore = cookies()
+    console.log('🔍 Cookies disponíveis:', cookieStore.getAll().map(c => c.name))
     
+    const supabase = createRouteHandlerClient({ cookies })
+    console.log('🔍 Supabase client criado')
+
     // Verificar autenticação
     const { data: { user }, error: authError } = await supabase.auth.getUser()
+    console.log('🔍 Auth result:', { user: user?.id, error: authError?.message })
+
     if (authError || !user) {
+      console.log('🔍 Retornando 401 - authError:', authError, 'user:', !!user)
       return NextResponse.json(
         { data: null, error: 'Não autorizado' },
         { status: 401 }
@@ -19,7 +27,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search') || ''
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '20')
+    const limit = parseInt(searchParams.get('limit') || '10')
     const offset = (page - 1) * limit
 
     // Construir query base
@@ -46,12 +54,14 @@ export async function GET(request: NextRequest) {
       .range(offset, offset + limit - 1)
 
     if (fetchError) {
-      console.error('Erro ao buscar clientes:', fetchError)
+      console.error('🔍 Erro na query:', fetchError)
       return NextResponse.json(
         { data: null, error: 'Erro ao buscar clientes' },
         { status: 500 }
       )
     }
+
+    console.log('🔍 Query sucesso - clients:', clients?.length, 'count:', count)
 
     const totalPages = Math.ceil((count || 0) / limit)
 
@@ -61,7 +71,7 @@ export async function GET(request: NextRequest) {
         pagination: {
           page,
           limit,
-          totalPages,
+          totalPages: Math.ceil((count || 0) / limit),
           totalCount: count || 0
         }
       },
